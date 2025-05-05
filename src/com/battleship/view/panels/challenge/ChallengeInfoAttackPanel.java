@@ -2,15 +2,17 @@ package com.battleship.view.panels.challenge;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-
 import java.awt.*;
-import com.battleship.view.components.buttons.CustomButton;
+
+import com.battleship.view.components.buttons.CustomToggleButton;
 import com.battleship.view.utils.ViewConstants;
 
 public class ChallengeInfoAttackPanel extends JPanel {
-	private JLabel timeLabel;
+    private JLabel timeLabel;
     private JLabel shotsLabel;
-    private CustomButton[] attackButtons;
+    private JLabel[] attackLabels;
+    private CustomToggleButton[] attackButtons;
+    private ButtonGroup attackButtonGroup;
 
     public ChallengeInfoAttackPanel(Font font, int preferredWidth) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -30,16 +32,16 @@ public class ChallengeInfoAttackPanel extends JPanel {
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setOpaque(false);
         infoPanel.setBorder(BorderFactory.createCompoundBorder(
-        	    BorderFactory.createTitledBorder(
-        	        BorderFactory.createLineBorder(Color.WHITE, 1, true),
-        	        "INFO",
-        	        TitledBorder.CENTER,
-        	        TitledBorder.TOP,
-        	        font.deriveFont(Font.BOLD, 15f),
-        	        Color.WHITE
-        	    ),
-        	    BorderFactory.createEmptyBorder(20, 10, 20, 10) // top, left, bottom, right
-        	));
+            BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.WHITE, 1, true),
+                "INFO",
+                TitledBorder.CENTER,
+                TitledBorder.TOP,
+                font.deriveFont(Font.BOLD, 15f),
+                Color.WHITE
+            ),
+            BorderFactory.createEmptyBorder(20, 10, 20, 10)
+        ));
 
         timeLabel = new JLabel("Time Left: 02:00", SwingConstants.CENTER);
         timeLabel.setFont(font.deriveFont(Font.BOLD, 24f));
@@ -57,7 +59,7 @@ public class ChallengeInfoAttackPanel extends JPanel {
         infoPanel.add(shotsLabel);
         infoPanel.add(Box.createVerticalStrut(18));
 
-     // Attack panel
+        // Attack panel
         JPanel attackPanel = new JPanel(new GridLayout(2, 2, 16, 16));
         attackPanel.setOpaque(false);
         attackPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -69,21 +71,49 @@ public class ChallengeInfoAttackPanel extends JPanel {
                 font.deriveFont(Font.BOLD, 15f),
                 Color.WHITE
             ),
-            BorderFactory.createEmptyBorder(30, 10, 30, 10) // top, left, bottom, right
+            BorderFactory.createEmptyBorder(30, 10, 30, 10)
         ));
 
+        String[] attackNames = {"Single", "Cross", "Random", "Diamond"};
         String[] btnOnImages = ViewConstants.CHALLENGE_ATK_ON_BUTTON_IMAGES;
         String[] btnHoverImages = ViewConstants.CHALLENGE_ATK_HOVER_BUTTON_IMAGES;
         String[] btnPressedImages = ViewConstants.CHALLENGE_ATK_PRESSED_BUTTON_IMAGES;
-        int btnWidth = 192, btnHeight = 96;
+        int btnWidth = 160, btnHeight = 88;
 
-        attackButtons = new CustomButton[4];
+        attackLabels = new JLabel[4];
+        attackButtons = new CustomToggleButton[4];
+        attackButtonGroup = new ButtonGroup();
+
         for (int i = 0; i < 4; i++) {
-            attackButtons[i] = new CustomButton(
+            JPanel atkPanel = new JPanel();
+            atkPanel.setLayout(new BoxLayout(atkPanel, BoxLayout.Y_AXIS));
+            atkPanel.setOpaque(false);
+
+            // Label tên + số lượng
+            String labelText = attackNames[i];
+            if (i > 0) labelText += ": 0"; // Single không cần số lượng
+            JLabel atkLabel = new JLabel(labelText);
+            atkLabel.setFont(font.deriveFont(Font.BOLD, 14f));
+            atkLabel.setForeground(Color.WHITE);
+            atkLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            attackLabels[i] = atkLabel;
+
+            // Nút toggle
+            CustomToggleButton atkBtn = new CustomToggleButton(
                 btnOnImages[i], btnHoverImages[i], btnPressedImages[i], btnWidth, btnHeight
             );
-            attackPanel.add(attackButtons[i]);
+            atkBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+            attackButtons[i] = atkBtn;
+            attackButtonGroup.add(atkBtn);
+
+            atkPanel.add(atkLabel);
+            atkPanel.add(Box.createVerticalStrut(4));
+            atkPanel.add(atkBtn);
+            attackPanel.add(atkPanel);
         }
+
+        // Mặc định chọn Single
+        attackButtons[0].setSelected(true);
 
         add(Box.createVerticalStrut(20));
         add(infoPanel);
@@ -100,7 +130,13 @@ public class ChallengeInfoAttackPanel extends JPanel {
         shotsLabel.setText("Shots Left: " + shots);
     }
 
-    public CustomButton getAttackButton(int idx) {
+    public void setAttackCount(int cross, int random, int diamond) {
+        attackLabels[1].setText("Cross: " + cross);
+        attackLabels[2].setText("Random: " + random);
+        attackLabels[3].setText("Diamond: " + diamond);
+    }
+
+    public CustomToggleButton getAttackButton(int idx) {
         return attackButtons[idx];
     }
 }
