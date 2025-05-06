@@ -42,13 +42,13 @@ public class ChallengeBoardPanel extends JPanel {
         Border cellBorder = BorderFactory.createMatteBorder(1, 1, 2, 2, Color.WHITE);
 
         // Load icons sử dụng ViewConstants
-        ImageIcon normalIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CHALLENGE_CELL_NORMAL_IMG)
+        ImageIcon normalIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_NORMAL_IMG)
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
-        ImageIcon hitIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CHALLENGE_CELL_HIT_IMG)
+        ImageIcon hitIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_HIT_IMG)
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
-        ImageIcon missIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CHALLENGE_CELL_MISS_IMG)
+        ImageIcon missIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_MISS_IMG)
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
-        ImageIcon hoverIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CHALLENGE_CELL_HOVER_IMG)
+        ImageIcon hoverIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_HOVER_IMG)
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
 
         // Khởi tạo GameBoardPanel với đầy đủ style

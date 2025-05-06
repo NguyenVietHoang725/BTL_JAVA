@@ -47,7 +47,7 @@ public class VsBotInfoAttackPanel extends JPanel {
         infoPanel.add(statusLabel);
         infoPanel.add(Box.createVerticalStrut(18));
 
-        // Attack panel (4 nút dọc)
+        // Attack panel (4 vertical buttons)
         JPanel attackPanel = new JPanel();
         attackPanel.setLayout(new BoxLayout(attackPanel, BoxLayout.Y_AXIS));
         attackPanel.setOpaque(false);
@@ -106,7 +106,6 @@ public class VsBotInfoAttackPanel extends JPanel {
         add(Box.createVerticalGlue());
     }
 
-    // Getter nếu cần
     public JLabel getTurnLabel() { return turnLabel; }
     public JLabel getStatusLabel() { return statusLabel; }
     public CustomToggleButton[] getAttackButtons() { return attackButtons; }

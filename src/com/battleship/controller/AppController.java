@@ -16,6 +16,8 @@ import com.battleship.view.panels.challenge.ChallengeBoardPanel;
 
 import java.awt.Font;
 
+import javax.swing.JOptionPane;
+
 public class AppController {
     private MainFrame mainFrame;
     private MenuController menuController;
@@ -88,65 +90,79 @@ public class AppController {
     }
     
     public void startVsBotMode() {
-        // 1. Khởi tạo font và các thông số giao diện
         Font font = com.battleship.view.utils.ResourceLoader.loadFont(
             com.battleship.view.utils.ViewConstants.FONT_PATH, 16f
         );
         int cellSize = 50;
 
-        // 2. Tạo panel đặt tàu
         var placementPanel = new com.battleship.view.panels.vsbot.placement.VsBotShipPlacementPanel(font, cellSize);
 
-        // 3. Đăng ký sự kiện xác nhận đặt tàu
-        // Giả sử bạn thêm callback hoặc setter cho sự kiện xác nhận, ví dụ:
-        placementPanel.getConfirmButton().addActionListener(e -> {
-            if (placementPanel.confirm()) {
-                // Lấy board người chơi
-                var playerBoard = placementPanel.getBoard();
-                // Lấy độ khó
-                String diff = placementPanel.getSelectedDifficulty();
+        placementPanel.getInfoPanel().getConfirmButton().addActionListener(e -> {
+            if (placementPanel.getBoardPanel().isAllShipsPlaced()) {
+                var playerBoard = placementPanel.getBoardPanel().getBoard();
+                String diff = placementPanel.getInfoPanel().getSelectedDifficulty();
 
                 // Khởi tạo chiến lược bot
                 com.battleship.interfaces.IBotAttackStrategy botStrategy;
                 switch (diff) {
-                    case "Dễ":
+                    case "Easy":
                         botStrategy = new com.battleship.model.botstrategy.EasyBotAtkStrategy();
                         break;
-                    case "Trung bình":
+                    case "Medium":
                         botStrategy = new com.battleship.model.botstrategy.MediumBotAtkStrategy();
                         break;
-                    case "Khó":
+                    case "Hard":
                         botStrategy = new com.battleship.model.botstrategy.HardBotAtkStrategy();
                         break;
                     default:
                         botStrategy = new com.battleship.model.botstrategy.EasyBotAtkStrategy();
                 }
 
-                // Khởi tạo Player và Bot
+                // Load board cho bot từ file txt (random)
+                var botBoard = loadRandomVsBotBoard();
+
                 var player = new com.battleship.model.player.Player("Player", playerBoard, null);
-                var botBoard = new com.battleship.model.board.Board();
                 var bot = new com.battleship.model.player.Bot("Bot", botBoard, null, botStrategy);
 
-                // Khởi tạo panel chơi
-                var playPanel = new com.battleship.view.panels.vsbot.play.VsBotPlayPanel(font, cellSize);
+                var playPanel = new com.battleship.view.panels.vsbot.play.VsBotPlayPanel(font, cellSize, diff);
 
-                // Khởi tạo controller
                 vsBotController = new com.battleship.controller.vsbot.VsBotController(
                     player, bot, playPanel, this
                 );
 
-                // Chuyển sang màn chơi
                 mainFrame.getCardPanel().setPanel(
                     com.battleship.view.utils.ViewConstants.VSBOT_PLAY, playPanel
                 );
                 mainFrame.switchScreen(com.battleship.view.utils.ViewConstants.VSBOT_PLAY);
+            } else {
+                JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "You haven't placed all ships!",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE
+                );
             }
         });
 
-        // 4. Hiển thị panel đặt tàu lên MainFrame
         mainFrame.getCardPanel().setPanel(
             com.battleship.view.utils.ViewConstants.VSBOT_SHIP_PLACEMENT, placementPanel
         );
         mainFrame.switchScreen(com.battleship.view.utils.ViewConstants.VSBOT_SHIP_PLACEMENT);
+    }
+
+    public void replayVsBotMode() {
+        startVsBotMode();
+    }
+
+    private com.battleship.model.board.Board loadRandomVsBotBoard() {
+        String[] files = com.battleship.view.utils.ViewConstants.VSBOT_FILE_PATHS;
+        String file = files[new java.util.Random().nextInt(files.length)];
+        try {
+            com.battleship.model.loader.ChallengeBoardLoader loader = new com.battleship.model.loader.ChallengeBoardLoader();
+            return loader.loadBoard(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new com.battleship.model.board.Board();
+        }
     }
 }

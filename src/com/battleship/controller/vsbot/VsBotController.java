@@ -29,69 +29,61 @@ public class VsBotController {
 
     private void initGame() {
         updateTurnLabel();
-        // Lắng nghe sự kiện click trên bảng bot để người chơi bắn
-        playPanel.getBotBoardPanel().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (isPlayerTurn && !gameEnded) {
-                    int cellSize = playPanel.getBotBoardPanel().getCellSize();
-                    int x = e.getX() / cellSize;
-                    int y = e.getY() / cellSize;
-                    playerAttack(x, y);
-                }
+        // Thay vì add MouseListener cho panel, add ActionListener cho từng ô:
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                int x = i, y = j;
+                playPanel.getBotBoardPanel().getButton(x, y).addActionListener(e -> {
+                    if (isPlayerTurn && !gameEnded) {
+                        playerAttack(x, y);
+                    }
+                });
             }
-        });
+        }
     }
 
     private void playerAttack(int x, int y) {
         Node node = bot.getBoard().getNode(x, y);
         if (node.isHit()) {
-            // Đã bắn rồi, không cho bắn lại
-            JOptionPane.showMessageDialog(playPanel, "Ô này đã bắn rồi!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(playPanel, "This cell has already been attacked!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         node.setHit(true);
         playPanel.getBotBoardPanel().repaint();
 
-        // Kiểm tra thắng/thua
         if (bot.getBoard().allShipsSunk()) {
             gameEnded = true;
-            updateStatusLabel("Bạn thắng!");
-            JOptionPane.showMessageDialog(playPanel, "Chúc mừng! Bạn đã thắng!", "Kết thúc", JOptionPane.INFORMATION_MESSAGE);
+            updateStatusLabel("You win!");
+            showGameOverDialog("Congratulations! You win!");
             return;
         }
 
-        // Chuyển lượt cho bot
         isPlayerTurn = false;
         updateTurnLabel();
         botTurn();
     }
 
     private void botTurn() {
-        // Để bot "nghĩ" 1 chút cho tự nhiên
         Timer timer = new Timer(700, e -> {
             int[] move = bot.chooseAttack(player.getBoard());
             int x = move[0], y = move[1];
             if (x < 0 || y < 0) {
-                // Không còn nước đi
                 gameEnded = true;
-                updateStatusLabel("Hòa!");
-                JOptionPane.showMessageDialog(playPanel, "Hòa!", "Kết thúc", JOptionPane.INFORMATION_MESSAGE);
+                updateStatusLabel("Draw!");
+                showGameOverDialog("Draw!");
                 return;
             }
             Node node = player.getBoard().getNode(x, y);
             node.setHit(true);
             playPanel.getPlayerBoardPanel().repaint();
 
-            // Kiểm tra thắng/thua
             if (player.getBoard().allShipsSunk()) {
                 gameEnded = true;
-                updateStatusLabel("Bot thắng!");
-                JOptionPane.showMessageDialog(playPanel, "Bạn đã thua! Bot thắng!", "Kết thúc", JOptionPane.INFORMATION_MESSAGE);
+                updateStatusLabel("Bot wins!");
+                showGameOverDialog("You lose! Bot wins!");
                 return;
             }
 
-            // Chuyển lượt lại cho người chơi
             isPlayerTurn = true;
             updateTurnLabel();
         });
@@ -101,13 +93,38 @@ public class VsBotController {
 
     private void updateTurnLabel() {
         if (isPlayerTurn) {
-            playPanel.getInfoAttackPanel().getTurnLabel().setText("Lượt của bạn");
+            playPanel.getInfoAttackPanel().getTurnLabel().setText("Your Turn");
         } else {
-            playPanel.getInfoAttackPanel().getTurnLabel().setText("Lượt của Bot");
+            playPanel.getInfoAttackPanel().getTurnLabel().setText("Bot's Turn");
         }
     }
 
     private void updateStatusLabel(String status) {
         playPanel.getInfoAttackPanel().getStatusLabel().setText("Status: " + status);
+    }
+
+    private void showGameOverDialog(String message) {
+        JPanel panel = new JPanel();
+        panel.add(new JLabel(message));
+        JButton replayBtn = new JButton("Replay");
+        JButton menuBtn = new JButton("Main Menu");
+        panel.add(replayBtn);
+        panel.add(menuBtn);
+
+        JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(playPanel), "Game Over", true);
+        dialog.getContentPane().add(panel);
+        dialog.pack();
+        dialog.setLocationRelativeTo(playPanel);
+
+        replayBtn.addActionListener(e -> {
+            dialog.dispose();
+            appController.replayVsBotMode();
+        });
+        menuBtn.addActionListener(e -> {
+            dialog.dispose();
+            appController.showMenu();
+        });
+
+        dialog.setVisible(true);
     }
 }

@@ -69,18 +69,43 @@ public class ViewConstants {
             "/images/buttons/challenge/challenge_diamond_atk_pressed_btn.png"
         };
     
-    public static final String CHALLENGE_CELL_NORMAL_IMG = "/images/buttons/challenge/challenge_cell.png";
-    public static final String CHALLENGE_CELL_HOVER_IMG = "/images/buttons/challenge/challenge_cell_hover.png";
-    public static final String CHALLENGE_CELL_HIT_IMG = "/images/buttons/challenge/challenge_cell_hit.png";
-    public static final String CHALLENGE_CELL_MISS_IMG = "/images/buttons/challenge/challenge_cell_miss.png";
+    public static final String CELL_NORMAL_IMG = "/images/buttons/board/board_cell.png";
+    public static final String CELL_HOVER_IMG = "/images/buttons/board/board_cell_hover.png";
+    public static final String CELL_HIT_IMG = "/images/buttons/board/board_cell_hit.png";
+    public static final String CELL_MISS_IMG = "/images/buttons/board/board_cell_miss.png";
     
     public static final String[] CHALLENGE_FILE_PATHS = {
-    		"/txt/challenge/level1.txt",
-    	      "/txt/challenge/level2.txt",
-    	      "/txt/challenge/level3.txt",
-    	      "/txt/challenge/level4.txt",
-    	      "/txt/challenge/level5.txt",
-    	      "/txt/challenge/level6.txt",
-    	      "/txt/challenge/level7.txt"
+    		"/txt/challenge/level_1.txt",
+    	    "/txt/challenge/level_2.txt",
+    	    "/txt/challenge/level_3.txt",
+    	    "/txt/challenge/level_4.txt",
+    	    "/txt/challenge/level_5.txt",
+    	    "/txt/challenge/level_6.txt",
+    	    "/txt/challenge/level_7.txt",
+    	    "/txt/challenge/level_8.txt",
+    	    "/txt/challenge/level_9.txt",
+    	    "/txt/challenge/level_10.txt",
+    	    "/txt/challenge/level_11.txt",
+    	    "/txt/challenge/level_12.txt",
+    	    "/txt/challenge/level_13.txt",
+    	    "/txt/challenge/level_14.txt"
+    	};
+    
+    public static final String VSBOT_PLACESHIP_BG_IMG = "/images/backgrounds/vsbot_placeship_background.png";
+    public static final String VSBOT_EASY_BG_IMG = "/images/backgrounds/vsbot_easy_background.png";
+    public static final String VSBOT_MEDIUM_BG_IMG = "/images/backgrounds/vsbot_medium_background.png";
+    public static final String VSBOT_HARD_BG_IMG = "/images/backgrounds/vsbot_hard_background.png";
+    
+    public static final String[] VSBOT_FILE_PATHS = {
+    	    "/txt/vsbot/level_1.txt",
+    	    "/txt/vsbot/level_2.txt",
+    	    "/txt/vsbot/level_3.txt",
+    	    "/txt/vsbot/level_4.txt",
+    	    "/txt/vsbot/level_5.txt",
+    	    "/txt/vsbot/level_6.txt",
+    	    "/txt/vsbot/level_7.txt",
+    	    "/txt/vsbot/level_8.txt",
+    	    "/txt/vsbot/level_9.txt",
+    	    "/txt/vsbot/level_10.txt"
     	};
 }

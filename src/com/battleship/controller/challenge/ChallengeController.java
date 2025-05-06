@@ -51,9 +51,9 @@ public class ChallengeController {
             this.gameOverDialogShown = false;
 
         // Load icon hit/miss
-        this.hitIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CHALLENGE_CELL_HIT_IMG)
+        this.hitIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_HIT_IMG)
                 .getScaledInstance(cellSize, cellSize, java.awt.Image.SCALE_SMOOTH));
-        this.missIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CHALLENGE_CELL_MISS_IMG)
+        this.missIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_MISS_IMG)
                 .getScaledInstance(cellSize, cellSize, java.awt.Image.SCALE_SMOOTH));
         
         // DEBUG: Kiểm tra icon có load được không
