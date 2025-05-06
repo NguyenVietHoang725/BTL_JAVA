@@ -1,12 +1,12 @@
 package com.battleship.view;
 
-import javax.swing.SwingUtilities;
+import com.battleship.controller.AppController;
 
 public class GameLauncher {
-	public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MainFrame mainFrame = new MainFrame();
-            mainFrame.setVisible(true);
+    public static void main(String[] args) {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            AppController app = new AppController();
+            app.start();
         });
     }
 }

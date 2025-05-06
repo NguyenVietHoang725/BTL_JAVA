@@ -1,27 +1,25 @@
 package com.battleship.view;
 
-import java.awt.Dimension;
-
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 public class MainFrame extends JFrame {
-	private CardPanel cardPanel;
+    private CardPanel cardPanel;
 
-    public MainFrame() {
-        setTitle("Battle Ship Game");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(1280, 720));
-        setMinimumSize(new Dimension(960, 540));
+    public MainFrame(Object appController) {
+        super("Battle Ship Game");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1280, 720);
+        setLocationRelativeTo(null);
 
         cardPanel = new CardPanel();
-        add(cardPanel);
-
-        pack();
-        setLocationRelativeTo(null);
+        setContentPane(cardPanel);
     }
 
     public void switchScreen(String name) {
         cardPanel.showScreen(name);
+    }
+
+    public CardPanel getCardPanel() {
+        return cardPanel;
     }
 }

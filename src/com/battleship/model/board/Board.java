@@ -77,7 +77,7 @@ public class Board {
 		ships.add(ship);
 	}
 
-	public void addShip(int x, int y, int length, boolean isHorizontal) {
+	public Ship addShip(int x, int y, int length, boolean isHorizontal) {
 	    Ship ship = new Ship(length, isHorizontal);
 	    for (int i = 0; i < length; i++) {
 	        int nx = isHorizontal ? x + i : x;
@@ -86,6 +86,7 @@ public class Board {
 	        ship.addNode(node);
 	    }
 	    ships.add(ship); // Thêm tàu vào danh sách tàu của board
+	    return ship;
 	}
 
 	public List<Ship> getShips() {

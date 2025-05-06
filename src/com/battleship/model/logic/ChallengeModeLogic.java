@@ -6,9 +6,11 @@ import com.battleship.model.attack.AttackLogic;
 import com.battleship.model.board.Board;
 import com.battleship.model.loader.ChallengeBoardLoader;
 import com.battleship.model.player.Player;
+import com.battleship.model.ship.Ship;
 import com.battleship.model.board.Node;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,10 +29,13 @@ public class ChallengeModeLogic extends GameLogic {
     private boolean gameOver = false;
     private boolean playerWin = false;
 
+    // Danh sách tàu vừa bị chìm ở lượt bắn này
+    private List<Ship> sunkShipsLastTurn = new ArrayList<>();
+
     // --- HÀM KHỞI TẠO ---
     public ChallengeModeLogic(Player player, ChallengeBoardLoader loader) throws IOException {
         super(player);
-        this.board = loader.loadBoard(""); // hoặc truyền board từ loader.loadBoard(filePath)
+        this.board = player.getBoard();
         this.maxShots = loader.getMaxShots();
         this.maxTimeSeconds = loader.getMaxTimeSeconds();
 
@@ -78,10 +83,17 @@ public class ChallengeModeLogic extends GameLogic {
         if (!attackLogic.canAttack(type, x, y)) {
             return List.of();
         }
+
         List<Node> attacked = attackLogic.attack(type, x, y);
+
         shotsUsed++;
         checkGameStatus();
         return attacked;
+    }
+
+    // Trả về danh sách tàu vừa bị chìm ở lượt bắn này
+    public List<Ship> getSunkShipsLastTurn() {
+        return sunkShipsLastTurn;
     }
 
     private void checkGameStatus() {

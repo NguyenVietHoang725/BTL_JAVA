@@ -29,7 +29,8 @@ public class MainMenuPanel extends JLayeredPane {
         centerPanel.setOpaque(false);
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.add(Box.createVerticalGlue());
-        centerPanel.add(new MenuButtonsPanel());
+        MenuButtonsPanel btnPanel = new MenuButtonsPanel();
+        centerPanel.add(btnPanel);
         centerPanel.add(Box.createVerticalGlue());
         contentPanel.add(centerPanel, BorderLayout.CENTER);
 

@@ -73,4 +73,5 @@ public class ViewConstants {
     public static final String CHALLENGE_CELL_HOVER_IMG = "/images/buttons/challenge/challenge_cell_hover.png";
     public static final String CHALLENGE_CELL_HIT_IMG = "/images/buttons/challenge/challenge_cell_hit.png";
     public static final String CHALLENGE_CELL_MISS_IMG = "/images/buttons/challenge/challenge_cell_miss.png";
+    
 }

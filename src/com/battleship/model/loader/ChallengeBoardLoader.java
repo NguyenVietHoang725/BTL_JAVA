@@ -1,12 +1,14 @@
 package com.battleship.model.loader;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import com.battleship.interfaces.IBoardLoader;
 import com.battleship.model.board.Board;
+import com.battleship.model.ship.Ship;
 
 public class ChallengeBoardLoader implements IBoardLoader {
     private int maxShots;
@@ -24,7 +26,9 @@ public class ChallengeBoardLoader implements IBoardLoader {
     @Override
     public Board loadBoard(String filePath) throws IOException {
         Board board = new Board();
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (InputStream is = getClass().getResourceAsStream(filePath);
+             BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+            if (is == null) throw new IOException("Resource not found: " + filePath);
             String line;
             int lineNum = 0;
             List<String> shipLines = new ArrayList<>();
@@ -53,7 +57,7 @@ public class ChallengeBoardLoader implements IBoardLoader {
                     maxTimeSeconds = minutes * 60 + seconds;
                 }
             }
-            // Thêm tàu vào board
+            
             for (String shipLine : shipLines) {
                 String[] parts = shipLine.split("\\s+");
                 if (parts.length == 4) {
@@ -65,6 +69,15 @@ public class ChallengeBoardLoader implements IBoardLoader {
                 }
             }
         }
+        
+        System.out.println("Số tàu trên board: " + board.getShips().size());
+        for (com.battleship.model.ship.Ship ship : board.getShips()) {
+            System.out.println("Ship: " + ship.toSaveString());
+            for (com.battleship.model.board.Node node : ship.getNodes()) {
+                System.out.println("Node hit? " + node.isHit());
+            }
+        }
+        
         return board;
     }
 }

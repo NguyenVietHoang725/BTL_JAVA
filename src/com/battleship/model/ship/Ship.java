@@ -19,7 +19,7 @@ public class Ship {
 	private int length; // Độ dài của tàu
 	private List<Node> nodes; // Danh sách node của tàu
 	private boolean isHorizontal; // Xác định tàu nằm ngang hay dọc (true = ngang; false = dọc)
-
+	
 	// --- HÀM KHỞI TẠO ---
 	/**
 	 * Hàm khởi tạo với 2 tham số:

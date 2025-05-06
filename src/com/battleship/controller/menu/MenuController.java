@@ -3,11 +3,13 @@ package com.battleship.controller.menu;
 import com.battleship.controller.BaseController;
 import com.battleship.controller.AppController;
 import com.battleship.view.MainFrame;
+import com.battleship.view.components.buttons.CustomButton;
 import com.battleship.view.panels.menu.MainMenuPanel;
 import com.battleship.view.panels.menu.MenuButtonsPanel;
 
 import javax.swing.*;
 import java.awt.Component;
+import java.awt.Container;
 
 public class MenuController extends BaseController {
     private final AppController appController;
@@ -17,19 +19,21 @@ public class MenuController extends BaseController {
         super(mainFrame);
         this.appController = appController;
         this.menuPanel = new MainMenuPanel();
+        System.out.println("MenuController: MainMenuPanel created " + this.menuPanel);
         initListeners();
     }
 
     private void initListeners() {
         // Lấy panel chứa các button
         MenuButtonsPanel btnPanel = findMenuButtonsPanel(menuPanel);
+        System.out.println("MenuController: btnPanel = " + btnPanel);
         if (btnPanel == null) return;
 
         // Giả sử thứ tự các button: Challenge, VsBot, Rule, Setting, Quit
         int btnIdx = 0;
         for (Component comp : btnPanel.getComponents()) {
-            if (comp instanceof com.battleship.view.components.buttons.CustomButton) {
-                com.battleship.view.components.buttons.CustomButton btn = (com.battleship.view.components.buttons.CustomButton) comp;
+            if (comp instanceof CustomButton) {
+                CustomButton btn = (CustomButton) comp;
                 int idx = btnIdx;
                 btn.addActionListener(e -> handleMenuButton(idx));
                 btnIdx++;
@@ -38,6 +42,7 @@ public class MenuController extends BaseController {
     }
 
     private void handleMenuButton(int idx) {
+    	System.out.println("Menu button pressed: " + idx);
         switch (idx) {
             case 0: // Challenge
                 appController.startChallengeMode();
@@ -58,15 +63,14 @@ public class MenuController extends BaseController {
     }
 
     // Tìm MenuButtonsPanel trong MainMenuPanel
-    private MenuButtonsPanel findMenuButtonsPanel(MainMenuPanel menuPanel) {
-        for (Component comp : menuPanel.getComponents()) {
-            if (comp instanceof JPanel) {
-                JPanel panel = (JPanel) comp;
-                for (Component sub : panel.getComponents()) {
-                    if (sub instanceof MenuButtonsPanel) {
-                        return (MenuButtonsPanel) sub;
-                    }
-                }
+    private MenuButtonsPanel findMenuButtonsPanel(Component parent) {
+        if (parent instanceof MenuButtonsPanel) {
+            return (MenuButtonsPanel) parent;
+        }
+        if (parent instanceof Container) {
+            for (Component child : ((Container) parent).getComponents()) {
+                MenuButtonsPanel found = findMenuButtonsPanel(child);
+                if (found != null) return found;
             }
         }
         return null;

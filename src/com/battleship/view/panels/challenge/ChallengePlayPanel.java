@@ -6,7 +6,10 @@ import com.battleship.view.components.common.ImageBackgroundPanel;
 import com.battleship.view.utils.ViewConstants;
 
 public class ChallengePlayPanel extends JPanel {
-	public ChallengePlayPanel(Font font, int leftPanelWidth, int boardPanelSize, int cellSize) {
+    private ChallengeInfoAttackPanel infoPanel;
+    private ChallengeBoardPanel boardPanel;
+
+    public ChallengePlayPanel(Font font, int leftPanelWidth, int boardPanelSize, int cellSize) {
         setLayout(new BorderLayout());
 
         // Background
@@ -19,12 +22,12 @@ public class ChallengePlayPanel extends JPanel {
         contentPanel.setOpaque(false);
 
         // Bên trái: Info & Attack
-        ChallengeInfoAttackPanel infoAttackPanel = new ChallengeInfoAttackPanel(font, leftPanelWidth);
-        contentPanel.add(infoAttackPanel, BorderLayout.WEST);
+        infoPanel = new ChallengeInfoAttackPanel(font, leftPanelWidth);
+        contentPanel.add(infoPanel, BorderLayout.WEST);
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Bên phải: Board
-        ChallengeBoardPanel boardPanel = new ChallengeBoardPanel(font, cellSize);
+        boardPanel = new ChallengeBoardPanel(font, cellSize);
         contentPanel.add(boardPanel, BorderLayout.CENTER);
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -49,5 +52,13 @@ public class ChallengePlayPanel extends JPanel {
                 layeredPane.setBounds(0, 0, size.width, size.height);
             }
         });
+    }
+
+    public ChallengeInfoAttackPanel getInfoPanel() {
+        return infoPanel;
+    }
+
+    public ChallengeBoardPanel getBoardPanel() {
+        return boardPanel;
     }
 }
