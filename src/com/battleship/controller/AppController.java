@@ -3,6 +3,7 @@ package com.battleship.controller;
 import com.battleship.view.MainFrame;
 import com.battleship.controller.menu.MenuController;
 import com.battleship.controller.challenge.ChallengeController;
+import com.battleship.controller.vsbot.VsBotController;
 import com.battleship.model.logic.ChallengeModeLogic;
 import com.battleship.model.board.Board;
 import com.battleship.model.loader.ChallengeBoardLoader;
@@ -19,6 +20,7 @@ public class AppController {
     private MainFrame mainFrame;
     private MenuController menuController;
     private ChallengeController challengeController;
+    private VsBotController vsBotController;
 
     public void start() {
         mainFrame = new MainFrame(this);
@@ -83,5 +85,68 @@ public class AppController {
             e.printStackTrace();
             // showMessage("Không thể khởi tạo chế độ Challenge!");
         }
+    }
+    
+    public void startVsBotMode() {
+        // 1. Khởi tạo font và các thông số giao diện
+        Font font = com.battleship.view.utils.ResourceLoader.loadFont(
+            com.battleship.view.utils.ViewConstants.FONT_PATH, 16f
+        );
+        int cellSize = 50;
+
+        // 2. Tạo panel đặt tàu
+        var placementPanel = new com.battleship.view.panels.vsbot.placement.VsBotShipPlacementPanel(font, cellSize);
+
+        // 3. Đăng ký sự kiện xác nhận đặt tàu
+        // Giả sử bạn thêm callback hoặc setter cho sự kiện xác nhận, ví dụ:
+        placementPanel.getConfirmButton().addActionListener(e -> {
+            if (placementPanel.confirm()) {
+                // Lấy board người chơi
+                var playerBoard = placementPanel.getBoard();
+                // Lấy độ khó
+                String diff = placementPanel.getSelectedDifficulty();
+
+                // Khởi tạo chiến lược bot
+                com.battleship.interfaces.IBotAttackStrategy botStrategy;
+                switch (diff) {
+                    case "Dễ":
+                        botStrategy = new com.battleship.model.botstrategy.EasyBotAtkStrategy();
+                        break;
+                    case "Trung bình":
+                        botStrategy = new com.battleship.model.botstrategy.MediumBotAtkStrategy();
+                        break;
+                    case "Khó":
+                        botStrategy = new com.battleship.model.botstrategy.HardBotAtkStrategy();
+                        break;
+                    default:
+                        botStrategy = new com.battleship.model.botstrategy.EasyBotAtkStrategy();
+                }
+
+                // Khởi tạo Player và Bot
+                var player = new com.battleship.model.player.Player("Player", playerBoard, null);
+                var botBoard = new com.battleship.model.board.Board();
+                var bot = new com.battleship.model.player.Bot("Bot", botBoard, null, botStrategy);
+
+                // Khởi tạo panel chơi
+                var playPanel = new com.battleship.view.panels.vsbot.play.VsBotPlayPanel(font, cellSize);
+
+                // Khởi tạo controller
+                vsBotController = new com.battleship.controller.vsbot.VsBotController(
+                    player, bot, playPanel, this
+                );
+
+                // Chuyển sang màn chơi
+                mainFrame.getCardPanel().setPanel(
+                    com.battleship.view.utils.ViewConstants.VSBOT_PLAY, playPanel
+                );
+                mainFrame.switchScreen(com.battleship.view.utils.ViewConstants.VSBOT_PLAY);
+            }
+        });
+
+        // 4. Hiển thị panel đặt tàu lên MainFrame
+        mainFrame.getCardPanel().setPanel(
+            com.battleship.view.utils.ViewConstants.VSBOT_SHIP_PLACEMENT, placementPanel
+        );
+        mainFrame.switchScreen(com.battleship.view.utils.ViewConstants.VSBOT_SHIP_PLACEMENT);
     }
 }

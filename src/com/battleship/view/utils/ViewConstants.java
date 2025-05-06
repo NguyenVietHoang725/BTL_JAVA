@@ -17,7 +17,7 @@ public class ViewConstants {
     // Tên panel cho CardPanel
     public static final String MAIN_MENU = "mainMenu";
     public static final String CHALLENGE_PLAY = "challengePlay";
-    public static final String VSBOT_MANAGE = "vsbotManage";
+    public static final String VSBOT_SHIP_PLACEMENT = "vsbotShipPlacement";
     public static final String VSBOT_PLAY = "vsbotPlay";
     public static final String RULE = "rule";
     

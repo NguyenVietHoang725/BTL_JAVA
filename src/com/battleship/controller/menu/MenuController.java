@@ -48,7 +48,7 @@ public class MenuController extends BaseController {
                 appController.startChallengeMode();
                 break;
             case 1: // VsBot
-//                appController.startVsBotMode();
+                appController.startVsBotMode();
                 break;
             case 2: // Rule
                 showMessage("Chức năng xem luật chơi sẽ được cập nhật!");
