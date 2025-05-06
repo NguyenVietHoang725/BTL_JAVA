@@ -2,6 +2,7 @@ package com.battleship.controller.challenge;
 
 import com.battleship.controller.AppController;
 import com.battleship.enums.AttackType;
+import com.battleship.enums.CellState;
 import com.battleship.model.logic.ChallengeModeLogic;
 import com.battleship.model.ship.Ship;
 import com.battleship.model.board.Node;
@@ -85,18 +86,18 @@ public class ChallengeController {
 
     private void handleAttack(int x, int y) {
         if (gameLogic.isGameOver()) return;
-        if (boardPanel.isCellAttacked(x, y)) return; // Không cho bắn lại ô đã bắn
+        if (!boardPanel.getButton(x, y).isEnabled()) return; // Không cho bắn lại ô đã bắn
 
         List<Node> attacked = gameLogic.attack(selectedAttackType, x, y);
 
         for (Node node : attacked) {
             int r = node.getX(), c = node.getY();
             if (node.isHasShip()) {
-                boardPanel.setCellIcon(r, c, hitIcon);
+                boardPanel.setCellState(r, c, CellState.HIT);
             } else {
-                boardPanel.setCellIcon(r, c, missIcon);
+                boardPanel.setCellState(r, c, CellState.MISS);
             }
-            boardPanel.setCellAttacked(r, c, true);
+            boardPanel.getButton(r, c).setEnabled(false);
         }
 
         updateInfoPanel();
