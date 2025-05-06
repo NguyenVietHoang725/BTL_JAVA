@@ -1,5 +1,6 @@
 package com.battleship.controller.challenge;
 
+import com.battleship.controller.AppController;
 import com.battleship.enums.AttackType;
 import com.battleship.model.logic.ChallengeModeLogic;
 import com.battleship.model.ship.Ship;
@@ -21,6 +22,7 @@ public class ChallengeController {
     private final ChallengePlayPanel playPanel;
     private final ChallengeInfoAttackPanel infoPanel;
     private final ChallengeBoardPanel boardPanel;
+    private final AppController appController;
     private boolean gameOverDialogShown = false;
     private final int cellSize;
 
@@ -36,12 +38,14 @@ public class ChallengeController {
             ChallengePlayPanel playPanel,
             ChallengeInfoAttackPanel infoPanel,
             ChallengeBoardPanel boardPanel,
+            AppController appController,
             int cellSize
         ) {
             this.gameLogic = gameLogic;
             this.playPanel = playPanel;
             this.infoPanel = infoPanel;
             this.boardPanel = boardPanel;
+			this.appController = appController;
             this.cellSize = cellSize;
             this.gameOverDialogShown = false;
 
@@ -127,12 +131,34 @@ public class ChallengeController {
     }
 
     private void showGameOver() {
-        if (gameOverDialogShown) return; // Đã hiển thị rồi thì không hiển thị lại
+        if (gameOverDialogShown) return;
         gameOverDialogShown = true;
         if (timer != null) timer.stop();
         String message = gameLogic.isPlayerWin() ? "You win!" : "You lose!";
-        JOptionPane.showMessageDialog(playPanel, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
-        // Disable bàn cờ hoặc chuyển về menu nếu muốn
+
+        // Tạo custom panel
+        JPanel panel = new JPanel();
+        panel.add(new JLabel(message));
+        JButton replayBtn = new JButton("Replay");
+        JButton menuBtn = new JButton("Main Menu");
+        panel.add(replayBtn);
+        panel.add(menuBtn);
+
+        JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(playPanel), "Game Over", true);
+        dialog.getContentPane().add(panel);
+        dialog.pack();
+        dialog.setLocationRelativeTo(playPanel);
+
+        replayBtn.addActionListener(e -> {
+            dialog.dispose();
+            appController.startChallengeMode(); // Random lại file challenge mới
+        });
+        menuBtn.addActionListener(e -> {
+            dialog.dispose();
+            appController.showMenu();
+        });
+
+        dialog.setVisible(true);
     }
 
     private String formatTime(int seconds) {

@@ -74,4 +74,13 @@ public class ViewConstants {
     public static final String CHALLENGE_CELL_HIT_IMG = "/images/buttons/challenge/challenge_cell_hit.png";
     public static final String CHALLENGE_CELL_MISS_IMG = "/images/buttons/challenge/challenge_cell_miss.png";
     
+    public static final String[] CHALLENGE_FILE_PATHS = {
+    		"/txt/challenge/level1.txt",
+    	      "/txt/challenge/level2.txt",
+    	      "/txt/challenge/level3.txt",
+    	      "/txt/challenge/level4.txt",
+    	      "/txt/challenge/level5.txt",
+    	      "/txt/challenge/level6.txt",
+    	      "/txt/challenge/level7.txt"
+    	};
 }

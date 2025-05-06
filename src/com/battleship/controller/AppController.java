@@ -41,7 +41,8 @@ public class AppController {
             Font font = ResourceLoader.loadFont(ViewConstants.FONT_PATH, 16f);
 
             // 2. Đường dẫn file challenge
-            String filePath = "/txt/challenge/level1.txt";
+            String[] challengeFiles = ViewConstants.CHALLENGE_FILE_PATHS;
+            String filePath = challengeFiles[new java.util.Random().nextInt(challengeFiles.length)];
 
             // 3. Khởi tạo loader và load file
             ChallengeBoardLoader loader = new ChallengeBoardLoader();
@@ -71,6 +72,7 @@ public class AppController {
                 playPanel,
                 infoPanel,
                 boardPanel,
+                this,
                 cellSize
             );
 
