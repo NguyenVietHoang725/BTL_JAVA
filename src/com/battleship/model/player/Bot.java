@@ -4,25 +4,46 @@ import com.battleship.enums.AttackType;
 import com.battleship.interfaces.IBotAttackStrategy;
 import com.battleship.model.attack.AttackInventory;
 import com.battleship.model.board.Board;
+import com.battleship.model.botstrategy.EasyBotAtkStrategy;
+import com.battleship.model.botstrategy.HardBotAtkStrategy;
+import com.battleship.model.botstrategy.MediumBotAtkStrategy;
 
-/**
- * Lớp "Bot" biểu diễn bot trong trò chơi
- *
- * @author Nguyen Viet Hoang
- * @version 1.0
- * @since 2025-04-28
- */
 public class Bot extends Player {
-    // --- THUỘC TÍNH ---
     private IBotAttackStrategy attackStrategy;
+    private String difficulty; // "Easy", "Medium", "Hard"
 
-    // --- HÀM KHỞI TẠO ---
-    public Bot(String name, Board board, AttackInventory atkInv, IBotAttackStrategy attackStrategy) {
+    // Constructor đầy đủ
+    public Bot(String name, Board board, AttackInventory atkInv, IBotAttackStrategy attackStrategy, String difficulty) {
         super(name, board, atkInv);
         this.attackStrategy = attackStrategy;
+        this.difficulty = difficulty;
     }
 
-    // --- GETTER & SETTER ---
+    // Constructor đơn giản hóa cho việc tạo bot với độ khó
+    public Bot(String difficulty) {
+        super("Bot", new Board(), new AttackInventory());
+        this.difficulty = difficulty;
+        // Khởi tạo attack strategy dựa vào độ khó
+        this.attackStrategy = createAttackStrategy(difficulty);
+    }
+
+    // Phương thức tạo attack strategy dựa vào độ khó
+    private IBotAttackStrategy createAttackStrategy(String difficulty) {
+        // TODO: Implement logic tạo attack strategy dựa vào độ khó
+        // Ví dụ:
+        switch (difficulty.toLowerCase()) {
+            case "easy":
+                return new EasyBotAtkStrategy();
+            case "medium":
+                return new MediumBotAtkStrategy();
+            case "hard":
+                return new HardBotAtkStrategy();
+            default:
+                return new EasyBotAtkStrategy();
+        }
+    }
+
+    // Getter & Setter
     public void setAttackStrategy(IBotAttackStrategy attackStrategy) {
         this.attackStrategy = attackStrategy;
     }
@@ -31,13 +52,17 @@ public class Bot extends Player {
         return attackStrategy;
     }
 
-    // --- CÁC PHƯƠNG THỨC KHÁC ---
-    /**
-     * Hàm chọn nước đi tiếp theo dựa trên chiến lược hiện tại.
-     *
-     * @param opponentBoard Bàn cờ của đối thủ (người chơi)
-     * @return int[] {x, y} là tọa độ bot sẽ bắn
-     */
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+        // Cập nhật attack strategy khi thay đổi độ khó
+        this.attackStrategy = createAttackStrategy(difficulty);
+    }
+    
+    // Các phương thức khác giữ nguyên
     public int[] chooseAttack(Board opponentBoard) {
         if (attackStrategy == null) {
             throw new IllegalStateException("Bot attack strategy is not set!");
@@ -45,28 +70,13 @@ public class Bot extends Player {
         return attackStrategy.chooseAttack(opponentBoard);
     }
 
-    /**
-     * Hàm kiểm tra xem bot có thể sử dụng kiểu tấn công hay không.
-     *
-     * @param type Kiểu tấn công
-     * @return true nếu bot có thể sử dụng kiểu tấn công, false nếu không
-     */
     @Override
     public boolean canUseAttackType(AttackType type) {
         return atkInv.hasAttack(type);
     }
 
-    /**
-     * Hàm kiểm tra xem bot có thể tấn công hay không.
-     *
-     * @param x Tọa độ x của ô
-     * @param y Tọa độ y của ô
-     * @param type Kiểu tấn công
-     * @return true nếu bot có thể tấn công, false nếu không
-     */
     @Override
     public boolean canAttack(int x, int y, AttackType type) {
-        // Nên kiểm tra ở logic tổng thể, ở đây chỉ kiểm tra lượt tấn công
         return canUseAttackType(type);
     }
 }

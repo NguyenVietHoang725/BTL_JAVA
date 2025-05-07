@@ -78,14 +78,19 @@ public class Board {
 	}
 
 	public Ship addShip(int x, int y, int length, boolean isHorizontal) {
-	    Ship ship = new Ship(length, isHorizontal);
-	    for (int i = 0; i < length; i++) {
-	        int nx = isHorizontal ? x + i : x;
-	        int ny = isHorizontal ? y : y + i;
-	        Node node = getNode(nx, ny); // Lấy node từ board
-	        ship.addNode(node);
+	    List<Node> shipNodes = new ArrayList<>();
+	    if (isHorizontal) {
+	        for (int i = 0; i < length; i++) {
+	            shipNodes.add(getNode(x, y + i));
+	        }
+	    } else {
+	        for (int i = 0; i < length; i++) {
+	            shipNodes.add(getNode(x + i, y));
+	        }
 	    }
-	    ships.add(ship); // Thêm tàu vào danh sách tàu của board
+	    for (Node node : shipNodes) node.setHasShip(true);
+	    Ship ship = new Ship(length, shipNodes, isHorizontal);
+	    ships.add(ship);
 	    return ship;
 	}
 
@@ -107,7 +112,29 @@ public class Board {
 
 		return true;
 	}
-
+	
+	public void removeShip(Ship ship) {
+	    if (ship == null) return;
+	    // Xóa trạng thái có tàu trên các node
+	    for (Node node : ship.getNodes()) {
+	        node.setHasShip(false);
+	    }
+	    // Xóa tàu khỏi danh sách
+	    ships.remove(ship);
+	}
+	
+	// Trong Board.java
+	public boolean isShipSunkAt(int x, int y) {
+	    for (Ship ship : ships) {
+	        for (Node node : ship.getNodes()) {
+	            if (node.getX() == x && node.getY() == y) {
+	                return ship.isSunk();
+	            }
+	        }
+	    }
+	    return false;
+	}
+	
 	/**
 	 * Hàm kiểm tra tọa độ có hợp lệ hay không
 	 *

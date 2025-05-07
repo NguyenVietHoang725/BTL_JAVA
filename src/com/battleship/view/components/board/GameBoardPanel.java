@@ -9,14 +9,15 @@ import com.battleship.enums.CellState;
 import java.awt.*;
 
 public class GameBoardPanel extends JPanel {
-	private JButton[][] buttons;
+    private JButton[][] buttons;
     private int size;
-    private ImageIcon normalIcon, missIcon, hoverIcon, hitIcon;
+    private int cellSize; // Lưu lại để dùng cho getPreferredSize
+    private ImageIcon normalIcon, missIcon, hoverIcon, hitIcon, shipIcon;
 
     public GameBoardPanel(
             String title,
             int size,
-            ImageIcon normalIcon, ImageIcon missIcon, ImageIcon hoverIcon, ImageIcon hitIcon,
+            ImageIcon normalIcon, ImageIcon missIcon, ImageIcon hoverIcon, ImageIcon hitIcon, ImageIcon shipIcon,
             int cellSize,
             Font headerFont,
             Color headerColor,
@@ -26,11 +27,13 @@ public class GameBoardPanel extends JPanel {
     ) {
         setOpaque(false);
         this.size = size;
+        this.cellSize = cellSize;
         this.buttons = new JButton[size][size];
         this.normalIcon = normalIcon;
         this.missIcon = missIcon;
         this.hoverIcon = hoverIcon;
         this.hitIcon = hitIcon;
+        this.shipIcon = shipIcon;
 
         setLayout(new BorderLayout());
 
@@ -89,40 +92,45 @@ public class GameBoardPanel extends JPanel {
         wrapper.add(boardPanel);
 
         add(wrapper, BorderLayout.CENTER);
+
+        // Đảm bảo kích thước cố định cho GameBoardPanel
+        setPreferredSize(new Dimension(boardSize, boardSize));
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        int boardSize = cellSize * (size + 1);
+        return new Dimension(boardSize, boardSize);
     }
 
     public int getBoardSize() {
         return size;
     }
 
+    // x: row, y: col
     public JButton getButton(int x, int y) {
+    	System.out.println("[DEBUG] getButton: x(row)=" + x + ", y(col)=" + y);
         return buttons[x][y];
     }
-    
-    // sử dụng khi đã kết hợp với phần model
+
+    // x: row, y: col
     public void setCellState(int x, int y, CellState state) {
+    	System.out.println("[DEBUG] GameBoardPanel.setCellState: x(row)=" + x + ", y(col)=" + y + ", state=" + state);
+        JButton btn = getButton(x, y);
         switch (state) {
-            case NORMAL:
-                buttons[x][y].setIcon(normalIcon);
-                break;
-            case MISS:
-                buttons[x][y].setIcon(missIcon);
-                break;
-            case HOVER:
-                buttons[x][y].setIcon(hoverIcon);
-                break;
-            case HIT:
-                buttons[x][y].setIcon(hitIcon);
-                break;
+            case HIT: btn.setIcon(hitIcon); break;
+            case MISS: btn.setIcon(missIcon); break;
+            case SHIP: btn.setIcon(shipIcon); break;
+            case NORMAL: btn.setIcon(normalIcon); break;
+            case HOVER: btn.setIcon(hoverIcon); break;
         }
     }
 
     public void resetBoard() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                //setCellState(i, j, CellState.NORMAL);
-            	buttons[i][j].setIcon(normalIcon);               
-            	buttons[i][j].setEnabled(true);
+                buttons[i][j].setIcon(normalIcon);
+                buttons[i][j].setEnabled(true);
             }
         }
     }

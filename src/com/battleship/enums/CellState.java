@@ -1,5 +1,5 @@
 package com.battleship.enums;
 
 public enum CellState {
-	NORMAL, MISS, HOVER, HIT
+	NORMAL, MISS, HOVER, HIT, SHIP
 }

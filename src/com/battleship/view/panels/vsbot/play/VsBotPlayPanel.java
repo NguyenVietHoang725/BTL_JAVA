@@ -2,51 +2,84 @@ package com.battleship.view.panels.vsbot.play;
 
 import javax.swing.*;
 import java.awt.*;
+import com.battleship.view.components.common.ImageBackgroundPanel;
 import com.battleship.view.utils.ViewConstants;
 
 public class VsBotPlayPanel extends JPanel {
     private VsBotInfoAttackPanel infoAttackPanel;
     private VsBotPlayerBoardPanel playerBoardPanel;
     private VsBotBotBoardPanel botBoardPanel;
-    private String difficulty; // "Easy", "Medium", "Hard"
+    private String difficulty;
 
     public VsBotPlayPanel(Font font, int cellSize, String difficulty) {
         this.difficulty = difficulty;
         setLayout(new BorderLayout());
+
+        // Background
+        String bgPath = switch (difficulty.toLowerCase()) {
+            case "medium" -> ViewConstants.VSBOT_MEDIUM_BG_IMG;
+            case "hard" -> ViewConstants.VSBOT_HARD_BG_IMG;
+            default -> ViewConstants.VSBOT_EASY_BG_IMG;
+        };
+        ImageBackgroundPanel bgPanel = new ImageBackgroundPanel(bgPath);
         setOpaque(false);
+        this.add(bgPanel, BorderLayout.CENTER);
 
-        // Panel chứa 2 bảng
-        JPanel boardsPanel = new JPanel();
-        boardsPanel.setLayout(new GridLayout(1, 2, 32, 0));
+        // Layered content
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setOpaque(false);
+
+        // Panel chứa hai bảng
+        JPanel boardsPanel = new JPanel(new GridLayout(1, 2, 32, 0));
         boardsPanel.setOpaque(false);
-
+        
+        // Khởi tạo các panel
         playerBoardPanel = new VsBotPlayerBoardPanel(font, cellSize);
         botBoardPanel = new VsBotBotBoardPanel(font, cellSize);
-
-        boardsPanel.add(playerBoardPanel);
-        boardsPanel.add(botBoardPanel);
-
-        // Panel info + attack (bên trái)
         infoAttackPanel = new VsBotInfoAttackPanel(font);
 
-        add(infoAttackPanel, BorderLayout.WEST);
-        add(boardsPanel, BorderLayout.CENTER);
+        // Thêm các panel vào layout
+        boardsPanel.add(playerBoardPanel);
+        boardsPanel.add(botBoardPanel);
+        boardsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Thêm boardsPanel vào contentPanel
+        contentPanel.add(boardsPanel, BorderLayout.CENTER);
+        contentPanel.add(infoAttackPanel, BorderLayout.SOUTH);
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Dùng JLayeredPane để overlay content lên background
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setLayout(null);
+
+        bgPanel.setBounds(0, 0, 1280, 720);
+        contentPanel.setBounds(0, 0, 1280, 720);
+
+        layeredPane.add(bgPanel, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(contentPanel, JLayeredPane.PALETTE_LAYER);
+
+        this.add(layeredPane, BorderLayout.CENTER);
+
+        // Đảm bảo resize đúng
+        this.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                Dimension size = getSize();
+                bgPanel.setBounds(0, 0, size.width, size.height);
+                contentPanel.setBounds(0, 0, size.width, size.height);
+                layeredPane.setBounds(0, 0, size.width, size.height);
+            }
+        });
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        String bgPath = ViewConstants.VSBOT_EASY_BG_IMG;
-        if ("Medium".equalsIgnoreCase(difficulty)) {
-            bgPath = ViewConstants.VSBOT_MEDIUM_BG_IMG;
-        } else if ("Hard".equalsIgnoreCase(difficulty)) {
-            bgPath = ViewConstants.VSBOT_HARD_BG_IMG;
-        }
-        Image bg = new ImageIcon(getClass().getResource(bgPath)).getImage();
-        g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
+    public VsBotInfoAttackPanel getInfoAttackPanel() { 
+        return infoAttackPanel; 
     }
-
-    public VsBotInfoAttackPanel getInfoAttackPanel() { return infoAttackPanel; }
-    public VsBotPlayerBoardPanel getPlayerBoardPanel() { return playerBoardPanel; }
-    public VsBotBotBoardPanel getBotBoardPanel() { return botBoardPanel; }
+    
+    public VsBotPlayerBoardPanel getPlayerBoardPanel() { 
+        return playerBoardPanel; 
+    }
+    
+    public VsBotBotBoardPanel getBotBoardPanel() { 
+        return botBoardPanel; 
+    }
 }

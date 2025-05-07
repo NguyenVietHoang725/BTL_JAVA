@@ -12,13 +12,12 @@ public class VsBotInfoAttackPanel extends JPanel {
     private JLabel statusLabel;
     private JLabel[] attackLabels;
     private CustomToggleButton[] attackButtons;
-    private ButtonGroup attackButtonGroup;
 
     public VsBotInfoAttackPanel(Font font) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setOpaque(false);
 
-        // Info panel
+        // Info panel (bên trái)
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setOpaque(false);
@@ -47,9 +46,9 @@ public class VsBotInfoAttackPanel extends JPanel {
         infoPanel.add(statusLabel);
         infoPanel.add(Box.createVerticalStrut(18));
 
-        // Attack panel (4 vertical buttons)
+        // Attack panel (bên phải, các nút ngang hàng)
         JPanel attackPanel = new JPanel();
-        attackPanel.setLayout(new BoxLayout(attackPanel, BoxLayout.Y_AXIS));
+        attackPanel.setLayout(new BoxLayout(attackPanel, BoxLayout.X_AXIS));
         attackPanel.setOpaque(false);
         attackPanel.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(Color.WHITE, 1, true),
@@ -68,7 +67,7 @@ public class VsBotInfoAttackPanel extends JPanel {
 
         attackLabels = new JLabel[4];
         attackButtons = new CustomToggleButton[4];
-        attackButtonGroup = new ButtonGroup();
+        ButtonGroup attackButtonGroup = new ButtonGroup();
 
         for (int i = 0; i < 4; i++) {
             JPanel atkPanel = new JPanel();
@@ -86,24 +85,23 @@ public class VsBotInfoAttackPanel extends JPanel {
             CustomToggleButton atkBtn = new CustomToggleButton(
                 btnOnImages[i], btnHoverImages[i], btnPressedImages[i], btnWidth, btnHeight
             );
-            atkBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+            atkBtn.setAlignmentY(Component.CENTER_ALIGNMENT);
             attackButtons[i] = atkBtn;
             attackButtonGroup.add(atkBtn);
 
             atkPanel.add(atkLabel);
             atkPanel.add(Box.createVerticalStrut(4));
             atkPanel.add(atkBtn);
+            attackPanel.add(Box.createHorizontalStrut(12));
             attackPanel.add(atkPanel);
-            attackPanel.add(Box.createVerticalStrut(12));
         }
-
         attackButtons[0].setSelected(true);
 
-        add(Box.createVerticalStrut(20));
+        add(Box.createHorizontalStrut(24));
         add(infoPanel);
-        add(Box.createVerticalStrut(30));
+        add(Box.createHorizontalGlue());
         add(attackPanel);
-        add(Box.createVerticalGlue());
+        add(Box.createHorizontalStrut(24));
     }
 
     public JLabel getTurnLabel() { return turnLabel; }

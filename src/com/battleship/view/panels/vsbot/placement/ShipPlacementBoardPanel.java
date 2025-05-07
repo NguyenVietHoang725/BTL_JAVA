@@ -5,12 +5,16 @@ import com.battleship.view.components.board.GameBoardPanel;
 import com.battleship.view.utils.ResourceLoader;
 import com.battleship.view.utils.ViewConstants;
 import com.battleship.model.board.Board;
+import com.battleship.model.ship.Ship;
+import com.battleship.model.ship.ShipPlacement;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShipPlacementBoardPanel extends JPanel {
     private static final int BOARD_SIZE = 10;
@@ -18,13 +22,20 @@ public class ShipPlacementBoardPanel extends JPanel {
     private Font font;
 
     private GameBoardPanel boardPanel;
-    private int[][] board = new int[BOARD_SIZE][BOARD_SIZE]; // 0: empty, >0: ship id
-
-    // Ship placement
-    private final int[] shipLengths = {5, 4, 3, 3, 2};
-    private final boolean[] shipsPlaced = new boolean[5];
-    private int currentShipIdx = 0;
+    private ShipPlacement shipPlacement;
+    private int selectedShipButtonIdx = -1; // index của nút tàu đang chọn (0-4)
     private boolean horizontal = true;
+    private int lastPreviewX = -1, lastPreviewY = -1, lastPreviewLen = -1;
+    private boolean lastPreviewHorizontal = true;
+
+    // Callback để cập nhật trạng thái nút tàu trên InfoPanel
+    private Runnable[] shipButtonUpdaters = new Runnable[ShipPlacement.SHIP_LENGTHS.length];
+
+    // Đánh dấu nút nào đã đặt (kể cả 2 nút tàu 3)
+    private boolean[] shipButtonPlaced = new boolean[ShipPlacement.SHIP_LENGTHS.length];
+
+    // Lưu lại thứ tự đặt tàu (để undo đúng nút)
+    private final List<Integer> placedShipButtonOrder = new ArrayList<>();
 
     public ShipPlacementBoardPanel(Font font, int cellSize) {
         this.font = font;
@@ -32,6 +43,8 @@ public class ShipPlacementBoardPanel extends JPanel {
 
         setLayout(new BorderLayout());
         setOpaque(false);
+
+        shipPlacement = new ShipPlacement(new Board());
 
         // Border giống Challenge
         Border outerBorder = BorderFactory.createCompoundBorder(
@@ -59,11 +72,13 @@ public class ShipPlacementBoardPanel extends JPanel {
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
         ImageIcon hoverIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_HOVER_IMG)
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
-
+        ImageIcon shipIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_SHIP_IMG)
+                .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
+        
         boardPanel = new GameBoardPanel(
             "", // Không cần title ở đây, đã có outerBorder
             BOARD_SIZE,
-            normalIcon, missIcon, hoverIcon, hitIcon,
+            normalIcon, missIcon, hoverIcon, hitIcon, shipIcon,
             cellSize,
             headerFont,
             headerColor,
@@ -82,14 +97,22 @@ public class ShipPlacementBoardPanel extends JPanel {
                 btn.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseEntered(MouseEvent e) {
-                        if (currentShipIdx < shipLengths.length && board[fy][fx] == 0 && canPlaceShip(fx, fy, shipLengths[currentShipIdx], horizontal)) {
-                            previewShip(fx, fy, true);
+                        if (selectedShipButtonIdx != -1 && !shipButtonPlaced[selectedShipButtonIdx]) {
+                            int len = ShipPlacement.SHIP_LENGTHS[selectedShipButtonIdx];
+                            if (canPlaceShip(fx, fy, len, horizontal)) {
+                                lastPreviewHorizontal = horizontal;
+                                lastPreviewX = fx;
+                                lastPreviewY = fy;
+                                lastPreviewLen = len;
+                                previewShip(fx, fy, len, true);
+                            }
                         }
                     }
                     @Override
                     public void mouseExited(MouseEvent e) {
-                        if (currentShipIdx < shipLengths.length && board[fy][fx] == 0) {
-                            previewShip(fx, fy, false);
+                        if (selectedShipButtonIdx != -1 && !shipButtonPlaced[selectedShipButtonIdx]) {
+                            int len = ShipPlacement.SHIP_LENGTHS[selectedShipButtonIdx];
+                            previewShip(fx, fy, len, false);
                         }
                     }
                 });
@@ -99,75 +122,125 @@ public class ShipPlacementBoardPanel extends JPanel {
         add(boardPanel, BorderLayout.CENTER);
     }
 
+    // Được gọi từ InfoPanel khi chọn nút tàu
+    public void setSelectedShipButtonIdx(int idx) {
+        this.selectedShipButtonIdx = idx;
+    }
+
+    // Được gọi từ InfoPanel để truyền callback cập nhật trạng thái nút tàu
+    public void setShipButtonUpdater(int idx, Runnable updater) {
+        shipButtonUpdaters[idx] = updater;
+    }
+
+    public ShipPlacement getShipPlacement() {
+        return shipPlacement;
+    }
+
     private void placeShip(int x, int y) {
-        if (currentShipIdx >= shipLengths.length) return;
-        int len = shipLengths[currentShipIdx];
-        if (canPlaceShip(x, y, len, horizontal)) {
-            for (int i = 0; i < len; i++) {
-                int nx = x + (horizontal ? i : 0);
-                int ny = y + (horizontal ? 0 : i);
-                board[ny][nx] = currentShipIdx + 1;
-                boardPanel.setCellState(ny, nx, CellState.HIT);
-            }
-            shipsPlaced[currentShipIdx] = true;
-            currentShipIdx++;
-        } else {
-            JOptionPane.showMessageDialog(this, "Cannot place ship here!", "Error", JOptionPane.ERROR_MESSAGE);
+        if (selectedShipButtonIdx == -1) return;
+        int idx = selectedShipButtonIdx;
+        if (shipButtonPlaced[idx]) return;
+
+        // Chỉ cho phép đặt nếu vị trí click trùng với preview cuối cùng
+        if (x != lastPreviewX || y != lastPreviewY || lastPreviewLen != ShipPlacement.SHIP_LENGTHS[idx]) {
+            JOptionPane.showMessageDialog(this, "Please hover over the cell before placing the ship!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        boolean placed = shipPlacement.placeShip(lastPreviewLen, lastPreviewX, lastPreviewY, lastPreviewHorizontal);
+        if (placed) {
+            shipButtonPlaced[idx] = true;
+            placedShipButtonOrder.add(idx);
+            if (shipButtonUpdaters[idx] != null) shipButtonUpdaters[idx].run();
+            selectedShipButtonIdx = -1;
+            updateBoardView();
         }
     }
 
-    private boolean canPlaceShip(int x, int y, int len, boolean horizontal) {
-        for (int i = 0; i < len; i++) {
-            int nx = x + (horizontal ? i : 0);
-            int ny = y + (horizontal ? 0 : i);
-            if (nx < 0 || nx >= BOARD_SIZE || ny < 0 || ny >= BOARD_SIZE) return false;
-            if (board[ny][nx] != 0) return false;
+    public void undo() {
+        if (shipPlacement.undo()) {
+            // Lấy index nút tàu vừa undo (theo thứ tự đặt)
+            if (!placedShipButtonOrder.isEmpty()) {
+                int idx = placedShipButtonOrder.remove(placedShipButtonOrder.size() - 1);
+                shipButtonPlaced[idx] = false;
+                if (shipButtonUpdaters[idx] != null) shipButtonUpdaters[idx].run();
+            }
+            updateBoardView();
         }
-        return true;
     }
 
-    private void previewShip(int x, int y, boolean hover) {
-    	if (currentShipIdx >= shipLengths.length) return;
-        int len = shipLengths[currentShipIdx];
-        for (int i = 0; i < len; i++) {
-            int nx = x + (horizontal ? i : 0);
-            int ny = y + (horizontal ? 0 : i);
-            if (nx < 0 || nx >= BOARD_SIZE || ny < 0 || ny >= BOARD_SIZE) continue;
-            if (board[ny][nx] == 0) {
-                boardPanel.setCellState(ny, nx, hover ? CellState.HOVER : CellState.NORMAL);
+    public void redo() {
+        if (shipPlacement.redo()) {
+            // Tìm index nút tàu cần disable lại (theo thứ tự đặt lại)
+            // Đếm số tàu đã đặt, disable đúng nút tiếp theo chưa disable
+            for (int i = 0; i < shipButtonPlaced.length; i++) {
+                if (!shipButtonPlaced[i]) {
+                    shipButtonPlaced[i] = true;
+                    placedShipButtonOrder.add(i);
+                    if (shipButtonUpdaters[i] != null) shipButtonUpdaters[i].run();
+                    break;
+                }
             }
+            updateBoardView();
         }
     }
 
     public void toggleOrientation() {
         horizontal = !horizontal;
+        // Nếu đang hover, có thể gọi lại previewShip với hướng mới (nếu muốn)
     }
 
     public void resetBoard() {
-        for (int y = 0; y < BOARD_SIZE; y++) {
-            for (int x = 0; x < BOARD_SIZE; x++) {
-                board[y][x] = 0;
-                boardPanel.setCellState(y, x, CellState.NORMAL);
+        shipPlacement.reset();
+        selectedShipButtonIdx = -1;
+        for (int i = 0; i < shipButtonPlaced.length; i++) {
+            shipButtonPlaced[i] = false;
+            if (shipButtonUpdaters[i] != null) shipButtonUpdaters[i].run();
+        }
+        placedShipButtonOrder.clear();
+        updateBoardView();
+    }
+
+    private boolean canPlaceShip(int x, int y, int len, boolean horizontal) {
+        return shipPlacement.canPlaceShip(len, x, y, horizontal);
+    }
+
+    private void previewShip(int x, int y, int len, boolean hover) {
+        for (int i = 0; i < len; i++) {
+            int nx = x + (horizontal ? 0 : i);
+            int ny = y + (horizontal ? i : 0);
+            if (nx < 0 || nx >= BOARD_SIZE || ny < 0 || ny >= BOARD_SIZE) continue;
+            boolean hasShip = shipPlacement.getBoard().getBoard()[nx][ny].isHasShip();
+            if (!hasShip) {
+                boardPanel.setCellState(ny, nx, hover ? CellState.HOVER : CellState.NORMAL);
             }
         }
-        for (int i = 0; i < shipsPlaced.length; i++) shipsPlaced[i] = false;
-        currentShipIdx = 0;
     }
 
-    public boolean isAllShipsPlaced() {
-        for (boolean placed : shipsPlaced) if (!placed) return false;
-        return true;
-    }
-
-    public Board getBoard() {
-        Board result = new Board();
+    private void updateBoardView() {
+        Board logicBoard = shipPlacement.getBoard();
         for (int y = 0; y < BOARD_SIZE; y++) {
             for (int x = 0; x < BOARD_SIZE; x++) {
-                if (board[y][x] > 0) {
-                    result.getNode(x, y).setHasShip(true);
+                if (logicBoard.getBoard()[x][y].isHasShip()) {
+                    boardPanel.setCellState(y, x, CellState.SHIP);
+                } else {
+                    boardPanel.setCellState(y, x, CellState.NORMAL);
                 }
             }
         }
-        return result;
+    }
+    
+    public boolean isAllShipsPlaced() {
+        boolean[] placed = shipButtonPlaced;
+        for (boolean b : placed) if (!b) return false;
+        return true;
+    }
+    
+    public Board getBoard() {
+        return shipPlacement.getBoard();
+    }
+    
+    public boolean isShipButtonPlaced(int idx) {
+        return shipButtonPlaced[idx];
     }
 }

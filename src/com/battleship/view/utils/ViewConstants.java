@@ -73,6 +73,7 @@ public class ViewConstants {
     public static final String CELL_HOVER_IMG = "/images/buttons/board/board_cell_hover.png";
     public static final String CELL_HIT_IMG = "/images/buttons/board/board_cell_hit.png";
     public static final String CELL_MISS_IMG = "/images/buttons/board/board_cell_miss.png";
+    public static final String CELL_SHIP_IMG = "/images/buttons/board/board_cell_ship.png";
     
     public static final String[] CHALLENGE_FILE_PATHS = {
     		"/txt/challenge/level_1.txt",
@@ -108,4 +109,38 @@ public class ViewConstants {
     	    "/txt/vsbot/level_9.txt",
     	    "/txt/vsbot/level_10.txt"
     	};
+
+	 // VSBot button images
+	 public static final String VSBOT_EASY_BUTTON = "/images/buttons/vsbot/easy_button.png";
+	 public static final String VSBOT_EASY_HOVER_BUTTON = "/images/buttons/vsbot/easy_hover_button.png";
+	 public static final String VSBOT_EASY_PRESSED_BUTTON = "/images/buttons/vsbot/easy_pressed_button.png";
+	
+	 public static final String VSBOT_MEDIUM_BUTTON = "/images/buttons/vsbot/medium_button.png";
+	 public static final String VSBOT_MEDIUM_HOVER_BUTTON = "/images/buttons/vsbot/medium_hover_button.png";
+	 public static final String VSBOT_MEDIUM_PRESSED_BUTTON = "/images/buttons/vsbot/medium_pressed_button.png";
+	
+	 public static final String VSBOT_HARD_BUTTON = "/images/buttons/vsbot/hard_button.png";
+	 public static final String VSBOT_HARD_HOVER_BUTTON = "/images/buttons/vsbot/hard_hover_button.png";
+	 public static final String VSBOT_HARD_PRESSED_BUTTON = "/images/buttons/vsbot/hard_pressed_button.png";
+	
+	 public static final String VSBOT_ROTATE_BUTTON = "/images/buttons/vsbot/rotate_button.png";
+	 public static final String VSBOT_ROTATE_HOVER_BUTTON = "/images/buttons/vsbot/rotate_hover_button.png";
+	 public static final String VSBOT_ROTATE_PRESSED_BUTTON = "/images/buttons/vsbot/rotate_pressed_button.png";
+	
+	 public static final String VSBOT_RESET_BUTTON = "/images/buttons/vsbot/reset_button.png";
+	 public static final String VSBOT_RESET_HOVER_BUTTON = "/images/buttons/vsbot/reset_hover_button.png";
+	 public static final String VSBOT_RESET_PRESSED_BUTTON = "/images/buttons/vsbot/reset_pressed_button.png";
+	
+	 public static final String VSBOT_CONFIRM_BUTTON = "/images/buttons/vsbot/confirm_button.png";
+	 public static final String VSBOT_CONFIRM_HOVER_BUTTON = "/images/buttons/vsbot/confirm_hover_button.png";
+	 public static final String VSBOT_CONFIRM_PRESSED_BUTTON = "/images/buttons/vsbot/confirm_pressed_button.png";
+	
+	 public static final String VSBOT_UNDO_BUTTON = "/images/buttons/vsbot/undo_button.png";
+	 public static final String VSBOT_UNDO_HOVER_BUTTON = "/images/buttons/vsbot/undo_hover_button.png";
+	 public static final String VSBOT_UNDO_PRESSED_BUTTON = "/images/buttons/vsbot/undo_pressed_button.png";
+	
+	 public static final String VSBOT_REDO_BUTTON = "/images/buttons/vsbot/redo_button.png";
+	 public static final String VSBOT_REDO_HOVER_BUTTON = "/images/buttons/vsbot/redo_hover_button.png";
+	 public static final String VSBOT_REDO_PRESSED_BUTTON = "/images/buttons/vsbot/redo_pressed_button.png";
+	 
 }

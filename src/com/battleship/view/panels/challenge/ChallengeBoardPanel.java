@@ -50,12 +50,14 @@ public class ChallengeBoardPanel extends JPanel {
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
         ImageIcon hoverIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_HOVER_IMG)
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
-
+        ImageIcon shipIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_SHIP_IMG)
+                .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
+        
         // Khởi tạo GameBoardPanel với đầy đủ style
         boardPanel = new GameBoardPanel(
             "", // Không cần title ở đây, đã có outerBorder
             10,
-            normalIcon, missIcon, hoverIcon, hitIcon,
+            normalIcon, missIcon, hoverIcon, hitIcon, shipIcon, 
             cellSize,
             headerFont,
             headerColor,

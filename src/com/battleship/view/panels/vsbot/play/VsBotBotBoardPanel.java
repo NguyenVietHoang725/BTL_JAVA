@@ -1,5 +1,8 @@
 package com.battleship.view.panels.vsbot.play;
 
+import com.battleship.enums.CellState;
+import com.battleship.model.board.Board;
+import com.battleship.model.board.Node;
 import com.battleship.view.components.board.GameBoardPanel;
 import com.battleship.view.utils.ResourceLoader;
 import com.battleship.view.utils.ViewConstants;
@@ -8,6 +11,8 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class VsBotBotBoardPanel extends JPanel {
     private GameBoardPanel boardPanel;
@@ -45,11 +50,13 @@ public class VsBotBotBoardPanel extends JPanel {
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
         ImageIcon hoverIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_HOVER_IMG)
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
-
+        ImageIcon shipIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_SHIP_IMG)
+                .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
+        
         boardPanel = new GameBoardPanel(
             "", // No title here, already in outerBorder
             10,
-            normalIcon, missIcon, hoverIcon, hitIcon,
+            normalIcon, missIcon, hoverIcon, hitIcon, shipIcon,
             cellSize,
             headerFont,
             headerColor,
@@ -58,7 +65,40 @@ public class VsBotBotBoardPanel extends JPanel {
             outerBorder
         );
 
+        // Gắn hover cho từng ô
+        for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 10; col++) {
+                JButton btn = boardPanel.getButton(row, col);
+                int r = row, c = col;
+                btn.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        if (btn.isEnabled()) boardPanel.setCellState(r, c, CellState.HOVER);
+                    }
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        if (btn.isEnabled()) boardPanel.setCellState(r, c, CellState.NORMAL);
+                    }
+                });
+            }
+        }
+
         add(boardPanel, BorderLayout.CENTER);
+    }
+    
+    public void updateBotBoard(Board board) {
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                Node node = board.getNode(x, y);
+                if (node.isHit() && node.isHasShip()) {
+                    boardPanel.setCellState(x, y, CellState.HIT);
+                } else if (node.isHit()) {
+                    boardPanel.setCellState(x, y, CellState.MISS);
+                } else {
+                    boardPanel.setCellState(x, y, CellState.NORMAL);
+                }
+            }
+        }
     }
 
     public JButton getButton(int row, int col) {
@@ -70,6 +110,7 @@ public class VsBotBotBoardPanel extends JPanel {
     }
 
     public void setCellState(int row, int col, com.battleship.enums.CellState state) {
+    	System.out.println("[DEBUG] setCellState: row=" + row + ", col=" + col + ", state=" + state);
         boardPanel.setCellState(row, col, state);
     }
 }

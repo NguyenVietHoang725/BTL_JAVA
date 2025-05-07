@@ -16,6 +16,7 @@ import com.battleship.view.utils.ResourceLoader;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 public class ChallengeController {
@@ -97,7 +98,15 @@ public class ChallengeController {
             } else {
                 boardPanel.setCellState(r, c, CellState.MISS);
             }
-            boardPanel.getButton(r, c).setEnabled(false);
+            
+            // XÓA LISTENER để không hover/click lại và không đổi lại icon
+            JButton btn = boardPanel.getButton(r, c);
+            for (MouseListener ml : btn.getMouseListeners()) {
+                btn.removeMouseListener(ml);
+            }
+            for (ActionListener al : btn.getActionListeners()) {
+                btn.removeActionListener(al);
+            }
         }
 
         updateInfoPanel();

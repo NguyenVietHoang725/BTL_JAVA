@@ -1,5 +1,8 @@
 package com.battleship.view.panels.vsbot.play;
 
+import com.battleship.enums.CellState;
+import com.battleship.model.board.Board;
+import com.battleship.model.board.Node;
 import com.battleship.view.components.board.GameBoardPanel;
 import com.battleship.view.utils.ResourceLoader;
 import com.battleship.view.utils.ViewConstants;
@@ -43,11 +46,13 @@ public class VsBotPlayerBoardPanel extends JPanel {
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
         ImageIcon hoverIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_HOVER_IMG)
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
-
+        ImageIcon shipIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_SHIP_IMG)
+                .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
+        
         boardPanel = new GameBoardPanel(
             "", // No title here, already in outerBorder
             10,
-            normalIcon, missIcon, hoverIcon, hitIcon,
+            normalIcon, missIcon, hoverIcon, hitIcon, shipIcon,
             cellSize,
             headerFont,
             headerColor,
@@ -57,6 +62,23 @@ public class VsBotPlayerBoardPanel extends JPanel {
         );
 
         add(boardPanel, BorderLayout.CENTER);
+    }
+    
+    public void updatePlayerBoard(Board board) {
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                Node node = board.getNode(x, y);
+                if (node.isHasShip() && node.isHit()) {
+                    boardPanel.setCellState(x, y, CellState.HIT);
+                } else if (node.isHasShip()) {
+                    boardPanel.setCellState(x, y, CellState.SHIP);
+                } else if (node.isHit()) {
+                    boardPanel.setCellState(x, y, CellState.MISS);
+                } else {
+                    boardPanel.setCellState(x, y, CellState.NORMAL);
+                }
+            }
+        }
     }
 
     public JButton getButton(int row, int col) {

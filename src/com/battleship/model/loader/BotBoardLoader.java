@@ -26,24 +26,20 @@ public class BotBoardLoader implements IBoardLoader {
      */
 	@Override
 	public Board loadBoard(String filePath) throws IOException {
-        Board board = new Board();
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) { // Tạo bộ đệm để đọc file
-            String line;
-            // Đọc thông tin tàu
-            while ((line = br.readLine()) != null && !line.trim().isEmpty()) { // Đọc từng dòng
-                String[] parts = line.trim().split("\\s+"); // Tách dòng thành các phần
-                if (parts.length < 4)
-				 {
-					continue; // Nếu số phần không đủ, bỏ qua
-				}
-                int x = Integer.parseInt(parts[0]); // Tọa độ x
-                int y = Integer.parseInt(parts[1]); // Tọa độ y
-                int length = Integer.parseInt(parts[2]); // Độ dài tàu
-                boolean isHorizontal = Boolean.parseBoolean(parts[3]); // Xác định tàu nằm ngang hay dọc
-                board.addShip(x, y, length, isHorizontal); // Thêm tàu vào bảng
-            }
-        }
-        return board; // Trả về bảng trò chơi đã tải
-    }
+	    Board board = new Board();
+	    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+	        String line;
+	        while ((line = br.readLine()) != null && !line.trim().isEmpty()) {
+	            String[] parts = line.trim().split("\\s+");
+	            if (parts.length < 4) continue;
+	            int x = Integer.parseInt(parts[0]);
+	            int y = Integer.parseInt(parts[1]);
+	            int length = Integer.parseInt(parts[2]);
+	            boolean isHorizontal = Boolean.parseBoolean(parts[3]);
+	            board.addShip(x, y, length, isHorizontal);
+	        }
+	    }
+	    return board;
+	}
 
 }
