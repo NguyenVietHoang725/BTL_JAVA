@@ -47,19 +47,19 @@ public class VsBotPlacementInfoPanel extends JPanel {
             ViewConstants.VSBOT_EASY_BUTTON,
             ViewConstants.VSBOT_EASY_HOVER_BUTTON,
             ViewConstants.VSBOT_EASY_PRESSED_BUTTON,
-            96, 24
+            112, 40
         );
         mediumBtn = new CustomToggleButton(
             ViewConstants.VSBOT_MEDIUM_BUTTON,
             ViewConstants.VSBOT_MEDIUM_HOVER_BUTTON,
             ViewConstants.VSBOT_MEDIUM_PRESSED_BUTTON,
-            96, 24
+            112, 40
         );
         hardBtn = new CustomToggleButton(
             ViewConstants.VSBOT_HARD_BUTTON,
             ViewConstants.VSBOT_HARD_HOVER_BUTTON,
             ViewConstants.VSBOT_HARD_PRESSED_BUTTON,
-            96, 24
+            112, 40
         );
 
         difficultyGroup = new ButtonGroup();
@@ -79,7 +79,7 @@ public class VsBotPlacementInfoPanel extends JPanel {
         // ==== PHẦN 2: CHỌN TÀU ====
         JPanel shipPanel = new JPanel();
         shipPanel.setOpaque(false);
-        shipPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 8, 8));
+        shipPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 12, 48));
         shipPanel.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(Color.WHITE, 2, true),
             "Select Ship", TitledBorder.CENTER, TitledBorder.TOP, font.deriveFont(Font.BOLD, 14f), Color.WHITE
@@ -112,44 +112,54 @@ public class VsBotPlacementInfoPanel extends JPanel {
             ViewConstants.VSBOT_UNDO_BUTTON,
             ViewConstants.VSBOT_UNDO_HOVER_BUTTON,
             ViewConstants.VSBOT_UNDO_PRESSED_BUTTON,
-            72, 24
+            88, 40
         );
         redoButton = new CustomButton(
             ViewConstants.VSBOT_REDO_BUTTON,
             ViewConstants.VSBOT_REDO_HOVER_BUTTON,
             ViewConstants.VSBOT_REDO_PRESSED_BUTTON,
-            72, 24
+            88, 40
         );
         undoRedoPanel.add(undoButton);
         undoRedoPanel.add(redoButton);
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         rotateButton = new CustomButton(
             ViewConstants.VSBOT_ROTATE_BUTTON,
             ViewConstants.VSBOT_ROTATE_HOVER_BUTTON,
             ViewConstants.VSBOT_ROTATE_PRESSED_BUTTON,
-            96, 24
+            112, 40
         );
         resetButton = new CustomButton(
             ViewConstants.VSBOT_RESET_BUTTON,
             ViewConstants.VSBOT_RESET_HOVER_BUTTON,
             ViewConstants.VSBOT_RESET_PRESSED_BUTTON,
-            96, 24
+            112, 40
         );
         confirmButton = new CustomButton(
             ViewConstants.VSBOT_CONFIRM_BUTTON,
             ViewConstants.VSBOT_CONFIRM_HOVER_BUTTON,
             ViewConstants.VSBOT_CONFIRM_PRESSED_BUTTON,
-            96, 24
+            112, 40
         );
+
+        rotateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        resetButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        confirmButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.add(rotateButton);
+        buttonPanel.add(Box.createVerticalStrut(16));
+        buttonPanel.add(resetButton);
+        buttonPanel.add(Box.createVerticalStrut(16));
+        buttonPanel.add(confirmButton);
 
         actionPanel.add(Box.createVerticalStrut(8));
         actionPanel.add(undoRedoPanel);
         actionPanel.add(Box.createVerticalStrut(16));
-        actionPanel.add(rotateButton);
-        actionPanel.add(Box.createVerticalStrut(16));
-        actionPanel.add(resetButton);
-        actionPanel.add(Box.createVerticalStrut(16));
-        actionPanel.add(confirmButton);
+        actionPanel.add(buttonPanel);
         actionPanel.add(Box.createVerticalStrut(8));
 
         // ==== LABEL HƯỚNG DẪN ====

@@ -51,7 +51,7 @@ public class MenuController extends BaseController {
                 appController.startVsBotMode();
                 break;
             case 2: // Rule
-                showMessage("Chức năng xem luật chơi sẽ được cập nhật!");
+            	com.battleship.view.components.dialog.RulesDialog.showDialog(mainFrame);
                 break;
             case 3: // Setting
             	com.battleship.view.components.dialog.SettingsDialog.showDialog(mainFrame);
