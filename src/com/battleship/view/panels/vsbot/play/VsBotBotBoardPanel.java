@@ -1,11 +1,13 @@
 package com.battleship.view.panels.vsbot.play;
 
+
 import com.battleship.enums.CellState;
 import com.battleship.model.board.Board;
 import com.battleship.model.board.Node;
 import com.battleship.utils.ResourceLoader;
 import com.battleship.utils.ViewConstants;
 import com.battleship.view.components.board.GameBoardPanel;
+
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -14,14 +16,19 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+
 public class VsBotBotBoardPanel extends JPanel {
     private GameBoardPanel boardPanel;
     private int cellSize;
+    private VsBotInfoPanel infoPanel;
 
-    public VsBotBotBoardPanel(Font font, int cellSize) {
+
+    public VsBotBotBoardPanel(Font font, int cellSize, VsBotInfoPanel infoPanel) {
         this.cellSize = cellSize;
+        this.infoPanel = infoPanel;
         setLayout(new BorderLayout());
         setOpaque(false);
+
 
         Border outerBorder = BorderFactory.createCompoundBorder(
             BorderFactory.createTitledBorder(
@@ -35,12 +42,15 @@ public class VsBotBotBoardPanel extends JPanel {
             BorderFactory.createEmptyBorder(12, 12, 12, 12)
         );
 
+
         add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+
 
         Color headerColor = new Color(255, 215, 0); // Gold
         Font headerFont = font.deriveFont(Font.BOLD, 22f);
         Border headerBorder = BorderFactory.createMatteBorder(2, 2, 1, 1, Color.WHITE);
         Border cellBorder = BorderFactory.createMatteBorder(1, 1, 2, 2, Color.WHITE);
+
 
         ImageIcon normalIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_NORMAL_IMG)
                 .getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH));
@@ -65,6 +75,7 @@ public class VsBotBotBoardPanel extends JPanel {
             outerBorder
         );
 
+
         // Gắn hover cho từng ô
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
@@ -83,9 +94,11 @@ public class VsBotBotBoardPanel extends JPanel {
             }
         }
 
+
         add(boardPanel, BorderLayout.CENTER);
     }
-    
+
+
     public void updateBotBoard(Board board) {
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
@@ -101,16 +114,16 @@ public class VsBotBotBoardPanel extends JPanel {
         }
     }
 
+
     public JButton getButton(int row, int col) {
         return boardPanel.getButton(row, col);
     }
 
-    public int getCellSize() {
-        return cellSize;
-    }
 
-    public void setCellState(int row, int col, com.battleship.enums.CellState state) {
-    	System.out.println("[DEBUG] setCellState: row=" + row + ", col=" + col + ", state=" + state);
+    public void setCellState(int row, int col, CellState state) {
         boardPanel.setCellState(row, col, state);
     }
 }
+
+
+

@@ -10,8 +10,8 @@ import java.awt.*;
 
 public class PauseDialog {
 	public static void showDialog(JFrame parentFrame, Runnable onResume, Runnable onSetting, Runnable onMainMenu) {
-		int dialogWidth = 320;
-		int dialogHeight = 220;
+		int dialogWidth = ViewConstants.dialogType1Width;
+        int dialogHeight = ViewConstants.dialogType1Height;
 
 		// Dialog setup
 		JDialog dialog = new JDialog(parentFrame, true);

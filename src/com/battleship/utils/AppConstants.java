@@ -11,7 +11,14 @@ public class AppConstants {
     public static final String BGM_HARD_BOT = "/sounds/bgm/bgm_hard_bot.wav";
 
     // --- SFX Paths ---
-    public static final String SFX_SINGLE_ATTACK = "/sounds/sfx/sfx_single_atk.wav";
-    public static final String SFX_CROSS_ATTACK = "/sounds/sfx/sfx_cross_atk.wav";
+    public static final String SFX_SINGLE_ATK = "/sounds/sfx/sfx_single_atk.wav";
+    public static final String SFX_CROSS_ATK = "/sounds/sfx/sfx_cross_atk.wav";
+    public static final String SFX_DIAMOND_ATK = "/sounds/sfx/sfx_diamond_atk.wav";
+    public static final String SFX_RANDOM_ATK = "/sounds/sfx/sfx_random_atk.wav";
+    public static final String SFX_VICTORY = "/sounds/sfx/sfx_victory.wav";
+    public static final String SFX_GAMEOVER = "/sounds/sfx/sfx_gameover.wav";
+
+
+
 
 }

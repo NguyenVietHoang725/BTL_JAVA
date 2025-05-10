@@ -159,4 +159,19 @@ public class Board {
     public boolean isValidCoordinate(int x, int y) {
         return x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE;
     }
+
+    public int getRemainingShips() {
+        int remainingShips = 0;
+        
+        // Duyệt qua tất cả các tàu trên bảng
+        for (Ship ship : ships) {
+            // Kiểm tra xem tàu có bị đánh chìm không
+            if (!isShipSunkAt(ship.getNodes().get(0).getX(), ship.getNodes().get(0).getY())) {
+                remainingShips++;
+            }
+        }
+        
+        return remainingShips;
+    }
+
 }

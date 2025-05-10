@@ -41,4 +41,8 @@ public class SoundSettings {
     private float clamp(float value) {
         return Math.max(0f, Math.min(1f, value));
     }
+
+	public void toggleMusic() {
+		this.musicEnabled = !this.musicEnabled;
+	}
 }

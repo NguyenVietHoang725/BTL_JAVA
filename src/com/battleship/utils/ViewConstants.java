@@ -137,6 +137,9 @@ public class ViewConstants {
 	 public static final String VSBOT_REDO_HOVER_BUTTON = "/images/buttons/vsbot/redo_hover_button.png";
 	 public static final String VSBOT_REDO_PRESSED_BUTTON = "/images/buttons/vsbot/redo_pressed_button.png";
 	 
+	 public static final int dialogType1Width = 480;
+	 public static final int dialogType1Height = 270;
+	 
 	// Dialog Game Over
 	 public static final String GAMEOVER_DIALOG_BG = "/images/backgrounds/gameover_background.png";
 
@@ -193,4 +196,11 @@ public class ViewConstants {
 	 public static final String PAUSE_MAINMENU_BTN = "/images/buttons/pause/mainmenu_button.png";
 	 public static final String PAUSE_MAINMENU_HOVER_BTN = "/images/buttons/pause/mainmenu_hover_button.png";
 	 public static final String PAUSE_MAINMENU_PRESSED_BTN = "/images/buttons/pause/mainmenu_pressed_button.png";
+	 
+	// --- Pause Dialog ---
+	 public static final String RULE_DIALOG_BG = "/images/backgrounds/rule_background.png";
+
+	 public static final String RULE_CLOSE_BTN = "/images/buttons/rule/close_button.png";
+	 public static final String RULE_CLOSE_HOVER_BTN = "/images/buttons/rule/close_hover_button.png";
+	 public static final String RULE_CLOSE_PRESSED_BTN = "/images/buttons/rule/close_pressed_button.png";
 }

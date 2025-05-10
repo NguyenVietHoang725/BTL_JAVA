@@ -10,8 +10,8 @@ import java.awt.*;
 
 public class RulesDialog {
     public static void showDialog(JFrame parentFrame) {
-        int dialogWidth = 900;  // Tăng kích thước
-        int dialogHeight = 700;
+        int dialogWidth = 912;  // Tăng kích thước
+        int dialogHeight = 501;
 
         // Dialog setup
         JDialog dialog = new JDialog(parentFrame, true);
@@ -26,17 +26,9 @@ public class RulesDialog {
         layeredPane.setBounds(0, 0, dialogWidth, dialogHeight);
 
         // Background
-        ImageBackgroundPanel background = new ImageBackgroundPanel(ViewConstants.SETTING_DIALOG_BG);
+        ImageBackgroundPanel background = new ImageBackgroundPanel(ViewConstants.RULE_DIALOG_BG);
         background.setBounds(0, 0, dialogWidth, dialogHeight);
         layeredPane.add(background, JLayeredPane.DEFAULT_LAYER);
-
-        // Title
-//        Font titleFont = ResourceLoader.loadFont(ViewConstants.FONT_PATH, 36f);
-//        JLabel titleLabel = new JLabel("Game Rules", SwingConstants.CENTER);
-//        titleLabel.setFont(titleFont);
-//        titleLabel.setForeground(Color.WHITE);
-//        titleLabel.setBounds(0, 20, dialogWidth, 40);
-//        layeredPane.add(titleLabel, JLayeredPane.PALETTE_LAYER);
 
         // Content Panel with GridBagLayout
         JPanel contentPanel = new JPanel(new GridBagLayout());
@@ -48,37 +40,37 @@ public class RulesDialog {
         gbc.insets = new Insets(5, 5, 5, 5);
 
         // Use system default font for content
-        Font contentFont = new Font("Segoe UI", Font.PLAIN, 14);
+        Font font = ResourceLoader.loadFont(ViewConstants.FONT_PATH, 18f); 
         String[] rules = {
-        	    "1. Mục tiêu",
-        	    "Phá huỷ toàn bộ tàu địch.",
-        	    "",
-        	    "2. Chế độ chơi",
-        	    "Chơi một mình: Bạn bắn vào bản đồ có tàu được đặt ngẫu nhiên.",
-        	    "",
-        	    "Chơi với bot: Bạn và bot thay phiên nhau bắn. Ai phá huỷ hết tàu của đối phương trước là người thắng.",
-        	    "",
-        	    "3. Cách chơi",
-        	    "Mỗi lượt, bạn chọn một ô trên bản đồ đối phương để bắn.",
-        	    "",
-        	    "Hit: bắn trúng tàu.",
-        	    "Miss: bắn trượt.",
-        	    "",
-        	    "Trong chế độ với bot, bot cũng sẽ bắn lại sau lượt của bạn.",
-        	    "",
-        	    "4. Điều kiện thắng – thua",
-        	    "Thắng: Khi bạn phá huỷ toàn bộ tàu của đối thủ.",
-        	    "",
-        	    "Thua:",
-        	    "Hết số lượt bắn cho phép (chơi một mình).",
-        	    "Hết thời gian (chơi một mình).",
-        	    "Bị bot phá huỷ hết tàu (chơi với bot)."
+        		"1. Objective",
+        		"Destroy all enemy ships.",
+        		"",
+        		"2. Game Modes",
+        		"- Single Player: You shoot at a map with randomly placed ships.",
+        		"",
+        		"- Play with Bot: You and the bot take turns shooting. Whoever destroys all enemy ships first wins.",
+        		"",
+        		"3. How to Play",
+        		"- Each turn, you select one tile on the opponent's map to shoot.",
+        		"",
+        		"+ Hit: you hit a ship.",
+        		"+ Miss: you miss.",
+        		"",
+        		"- In bot mode, the bot will also shoot after your turn.",
+        		"",
+        		"4. Win – Lose Conditions",
+        		"- Win: When you destroy all enemy ships.",
+        		"",
+        		"- Lose:",
+        		"+ Out of allowed shots (Single Player).",
+        		"+ Out of time (Single Player).",
+        		"+ All your ships are destroyed by the bot (Play with Bot)."
         	};
 
 
         for (String rule : rules) {
             JLabel label = new JLabel(rule);
-            label.setFont(contentFont);
+            label.setFont(font);
             label.setForeground(Color.WHITE);
             contentPanel.add(label, gbc);
             gbc.gridy++;
@@ -94,9 +86,9 @@ public class RulesDialog {
 
         // Close button
         CustomButton closeBtn = new CustomButton(
-            ViewConstants.BTN_APPLY_NORMAL,
-            ViewConstants.BTN_APPLY_HOVER,
-            ViewConstants.BTN_APPLY_PRESSED,
+            ViewConstants.RULE_CLOSE_BTN,
+            ViewConstants.RULE_CLOSE_HOVER_BTN,
+            ViewConstants.RULE_CLOSE_PRESSED_BTN,
             120, 40
         );
 //        closeBtn.setText("Close");

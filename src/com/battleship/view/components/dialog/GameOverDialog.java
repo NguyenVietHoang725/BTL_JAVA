@@ -11,8 +11,8 @@ import java.awt.*;
 public class GameOverDialog {
 
     public static void showDialog(JFrame parentFrame, String message, Runnable onReplay, Runnable onMenu) {
-        int dialogWidth = 480;
-        int dialogHeight = 270;
+        int dialogWidth = ViewConstants.dialogType1Width;
+        int dialogHeight = ViewConstants.dialogType1Height;
 
         // Dialog setup
         JDialog dialog = new JDialog(parentFrame, true);

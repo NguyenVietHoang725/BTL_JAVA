@@ -7,14 +7,16 @@ import com.battleship.utils.ViewConstants;
 import com.battleship.view.components.common.ImageBackgroundPanel;
 
 public class VsBotPlayPanel extends JPanel {
-    private VsBotInfoAttackPanel infoAttackPanel;
+    private VsBotInfoPanel infoPanel;
     private VsBotPlayerBoardPanel playerBoardPanel;
     private VsBotBotBoardPanel botBoardPanel;
     private String difficulty;
 
+
     public VsBotPlayPanel(Font font, int cellSize, String difficulty) {
         this.difficulty = difficulty;
         setLayout(new BorderLayout());
+
 
         // Background
         String bgPath = switch (difficulty.toLowerCase()) {
@@ -26,40 +28,49 @@ public class VsBotPlayPanel extends JPanel {
         setOpaque(false);
         this.add(bgPanel, BorderLayout.CENTER);
 
+
         // Layered content
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setOpaque(false);
+
 
         // Panel chứa hai bảng
         JPanel boardsPanel = new JPanel(new GridLayout(1, 2, 32, 0));
         boardsPanel.setOpaque(false);
         
         // Khởi tạo các panel
+        infoPanel = new VsBotInfoPanel(font);
         playerBoardPanel = new VsBotPlayerBoardPanel(font, cellSize);
-        botBoardPanel = new VsBotBotBoardPanel(font, cellSize);
-        infoAttackPanel = new VsBotInfoAttackPanel(font);
+        botBoardPanel = new VsBotBotBoardPanel(font, cellSize, infoPanel);
+
 
         // Thêm các panel vào layout
         boardsPanel.add(playerBoardPanel);
         boardsPanel.add(botBoardPanel);
         boardsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
+
         // Thêm boardsPanel vào contentPanel
         contentPanel.add(boardsPanel, BorderLayout.CENTER);
-        contentPanel.add(infoAttackPanel, BorderLayout.SOUTH);
+        contentPanel.add(infoPanel, BorderLayout.SOUTH);
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
 
         // Dùng JLayeredPane để overlay content lên background
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setLayout(null);
 
+
         bgPanel.setBounds(0, 0, 1280, 720);
         contentPanel.setBounds(0, 0, 1280, 720);
+
 
         layeredPane.add(bgPanel, JLayeredPane.DEFAULT_LAYER);
         layeredPane.add(contentPanel, JLayeredPane.PALETTE_LAYER);
 
+
         this.add(layeredPane, BorderLayout.CENTER);
+
 
         // Đảm bảo resize đúng
         this.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -72,8 +83,9 @@ public class VsBotPlayPanel extends JPanel {
         });
     }
 
-    public VsBotInfoAttackPanel getInfoAttackPanel() { 
-        return infoAttackPanel; 
+
+    public VsBotInfoPanel getInfoPanel() { 
+        return infoPanel; 
     }
     
     public VsBotPlayerBoardPanel getPlayerBoardPanel() { 
@@ -84,3 +96,6 @@ public class VsBotPlayPanel extends JPanel {
         return botBoardPanel; 
     }
 }
+
+
+

@@ -10,6 +10,7 @@ import com.battleship.view.components.buttons.CustomToggleButton;
 public class ChallengeInfoAttackPanel extends JPanel {
     private JLabel timeLabel;
     private JLabel shotsLabel;
+    private JLabel shipsLabel;
     private JLabel[] attackLabels;
     private CustomToggleButton[] attackButtons;
     private ButtonGroup attackButtonGroup;
@@ -31,7 +32,6 @@ public class ChallengeInfoAttackPanel extends JPanel {
 
         setPreferredSize(new Dimension(preferredWidth, 0));
 
-        // Info panel
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setOpaque(false);
@@ -47,20 +47,32 @@ public class ChallengeInfoAttackPanel extends JPanel {
             BorderFactory.createEmptyBorder(20, 10, 20, 10)
         ));
 
+
         timeLabel = new JLabel("Time Left: 02:00", SwingConstants.CENTER);
-        timeLabel.setFont(font.deriveFont(Font.BOLD, 24f));
+        timeLabel.setFont(font.deriveFont(Font.BOLD, 18f));
         timeLabel.setForeground(Color.WHITE);
         timeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+
         shotsLabel = new JLabel("Shots Left: 30", SwingConstants.CENTER);
-        shotsLabel.setFont(font.deriveFont(Font.BOLD, 24f));
+        shotsLabel.setFont(font.deriveFont(Font.BOLD, 18f));
         shotsLabel.setForeground(Color.WHITE);
         shotsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
+        // Thêm label cho ships remaining
+        shipsLabel = new JLabel("Ships Remaining: 5", SwingConstants.CENTER);
+        shipsLabel.setFont(font.deriveFont(Font.BOLD, 18f));
+        shipsLabel.setForeground(Color.WHITE);
+        shipsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
 
         infoPanel.add(Box.createVerticalStrut(18));
         infoPanel.add(timeLabel);
         infoPanel.add(Box.createVerticalStrut(24));
         infoPanel.add(shotsLabel);
+        infoPanel.add(Box.createVerticalStrut(24));
+        infoPanel.add(shipsLabel);
         infoPanel.add(Box.createVerticalStrut(18));
 
         // Attack panel
@@ -138,6 +150,10 @@ public class ChallengeInfoAttackPanel extends JPanel {
         attackLabels[1].setText("Cross: " + cross);
         attackLabels[2].setText("Random: " + random);
         attackLabels[3].setText("Diamond: " + diamond);
+    }
+    
+    public void setShipsRemaining(int ships) {
+        shipsLabel.setText("Ships Remaining: " + ships);
     }
 
     public CustomToggleButton getAttackButton(int idx) {

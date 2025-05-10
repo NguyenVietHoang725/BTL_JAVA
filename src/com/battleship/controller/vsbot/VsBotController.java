@@ -70,18 +70,30 @@ public class VsBotController {
     }
 
     private void playerAttack(int x, int y) {
-    	System.out.println("[DEBUG] playerAttack: x(row)=" + x + ", y(col)=" + y);
+        System.out.println("[DEBUG] playerAttack: x(row)=" + x + ", y(col)=" + y);
         Node node = bot.getBoard().getNode(x, y);
+        
+        // Kiểm tra nếu ô đã bị tấn công
         if (node.isHit()) {
             JOptionPane.showMessageDialog(playPanel, "This cell has already been attacked!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
+
+        // Đánh dấu ô đã bị tấn công
         node.setHit(true);
 
+
+        // Cập nhật trạng thái ô trên bảng
         playPanel.getBotBoardPanel().setCellState(x, y, node.isHasShip() ? CellState.HIT : CellState.MISS);
         
-        // XÓA LISTENER để không hover/click lại và không đổi lại icon
+        // Cập nhật thông tin tấn công gần nhất
+        playPanel.getInfoPanel().updateLastAttack(x, y);
+        
+        // Cập nhật số tàu còn lại của bot
+        playPanel.getInfoPanel().updateRemainingShips(bot.getBoard().getRemainingShips());
+        
+        // Xóa listener để không hover/click lại và không đổi lại icon
         JButton btn = playPanel.getBotBoardPanel().getButton(x, y);
         for (MouseListener ml : btn.getMouseListeners()) {
             btn.removeMouseListener(ml);
@@ -90,28 +102,38 @@ public class VsBotController {
             btn.removeActionListener(al);
         }
         
+        // Xử lý kết quả tấn công
         if (node.isHasShip()) {
+            // Nếu trúng tàu
             if (bot.getBoard().isShipSunkAt(x, y)) {
-                updateStatusLabel("You sunk a ship! Bot's turn.");
+                // Nếu đánh chìm tàu
+                playPanel.getInfoPanel().updateStatus("You sunk a ship! Bot's turn.");
+                
+                // Kiểm tra thắng
                 if (bot.getBoard().allShipsSunk()) {
                     gameEnded = true;
-                    updateStatusLabel("You win!");
+                    playPanel.getInfoPanel().updateStatus("You win!");
                     showGameOverDialog("Congratulations! You win!");
                     return;
                 }
+                
+                // Chuyển lượt cho bot
                 isPlayerTurn = false;
-                updateTurnLabel();
+                playPanel.getInfoPanel().updateTurn(false);
                 botTurn();
             } else {
-                updateStatusLabel("Hit! Shoot again!");
+                // Nếu chỉ trúng tàu nhưng chưa chìm
+                playPanel.getInfoPanel().updateStatus("Hit! Shoot again!");
             }
         } else {
-            updateStatusLabel("Miss! Bot's turn.");
+            // Nếu trượt
+            playPanel.getInfoPanel().updateStatus("Miss! Bot's turn.");
             isPlayerTurn = false;
-            updateTurnLabel();
+            playPanel.getInfoPanel().updateTurn(false);
             botTurn();
         }
     }
+
 
     private void botTurn() {
         Timer timer = new Timer(700, e -> {
@@ -121,27 +143,30 @@ public class VsBotController {
             Node node = player.getBoard().getNode(x, y);
             node.setHit(true);
             
+            // Cập nhật thông tin tấn công gần nhất
+            playPanel.getInfoPanel().updateLastAttack(x, y);
+            
             if (node.isHasShip()) {
                 playPanel.getPlayerBoardPanel().setCellState(x, y, CellState.HIT);
                 if (player.getBoard().isShipSunkAt(x, y)) {
-                    updateStatusLabel("Bot sunk your ship! Your turn.");
+                    playPanel.getInfoPanel().updateStatus("Bot sunk your ship! Your turn.");
                     if (player.getBoard().allShipsSunk()) {
                         gameEnded = true;
-                        updateStatusLabel("Bot wins!");
+                        playPanel.getInfoPanel().updateStatus("Bot wins!");
                         showGameOverDialog("You lose! Bot wins!");
                         return;
                     }
                     isPlayerTurn = true;
-                    updateTurnLabel();
+                    playPanel.getInfoPanel().updateTurn(true);
                 } else {
-                    updateStatusLabel("Bot hit! Bot shoots again!");
+                    playPanel.getInfoPanel().updateStatus("Bot hit! Bot shoots again!");
                     botTurn();
                 }
             } else {
                 playPanel.getPlayerBoardPanel().setCellState(x, y, CellState.MISS);
-                updateStatusLabel("Bot missed! Your turn.");
+                playPanel.getInfoPanel().updateStatus("Bot missed! Your turn.");
                 isPlayerTurn = true;
-                updateTurnLabel();
+                playPanel.getInfoPanel().updateTurn(true);
             }
         });
         timer.setRepeats(false);
@@ -150,14 +175,14 @@ public class VsBotController {
 
     private void updateTurnLabel() {
         if (isPlayerTurn) {
-            playPanel.getInfoAttackPanel().getTurnLabel().setText("Your Turn");
+            playPanel.getInfoPanel().getTurnLabel().setText("Your Turn");
         } else {
-            playPanel.getInfoAttackPanel().getTurnLabel().setText("Bot's Turn");
+            playPanel.getInfoPanel().getTurnLabel().setText("Bot's Turn");
         }
     }
 
     private void updateStatusLabel(String status) {
-        playPanel.getInfoAttackPanel().getStatusLabel().setText("Status: " + status);
+        playPanel.getInfoPanel().getStatusLabel().setText("Status: " + status);
     }
 
     private void showGameOverDialog(String message) {
