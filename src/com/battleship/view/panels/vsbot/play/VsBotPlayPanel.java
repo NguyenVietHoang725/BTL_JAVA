@@ -2,8 +2,9 @@ package com.battleship.view.panels.vsbot.play;
 
 import javax.swing.*;
 import java.awt.*;
+
+import com.battleship.utils.ViewConstants;
 import com.battleship.view.components.common.ImageBackgroundPanel;
-import com.battleship.view.utils.ViewConstants;
 
 public class VsBotPlayPanel extends JPanel {
     private VsBotInfoAttackPanel infoAttackPanel;

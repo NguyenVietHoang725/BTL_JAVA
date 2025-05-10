@@ -41,5 +41,15 @@ public class BotBoardLoader implements IBoardLoader {
 	    }
 	    return board;
 	}
-
+	
+	public static Board loadRandomBoardFromResources(String[] resourcePaths) {
+        String file = resourcePaths[new java.util.Random().nextInt(resourcePaths.length)];
+        try {
+            String filePath = BotBoardLoader.class.getResource(file).getPath();
+            return new BotBoardLoader().loadBoard(filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Board();
+        }
+    }
 }

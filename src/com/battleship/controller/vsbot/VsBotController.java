@@ -1,12 +1,15 @@
 package com.battleship.controller.vsbot;
 
 import com.battleship.model.player.Player;
+import com.battleship.utils.ViewConstants;
 import com.battleship.model.player.Bot;
 import com.battleship.model.board.Board;
 import com.battleship.model.board.Node;
 import com.battleship.model.loader.BotBoardLoader;
+import com.battleship.view.components.dialog.GameOverDialog;
+import com.battleship.view.components.dialog.PauseDialog;
+import com.battleship.view.components.dialog.SettingsDialog;
 import com.battleship.view.panels.vsbot.play.VsBotPlayPanel;
-import com.battleship.view.utils.ViewConstants;
 import com.battleship.enums.CellState;
 import com.battleship.controller.AppController;
 
@@ -28,6 +31,7 @@ public class VsBotController {
         this.bot = bot;
         this.playPanel = playPanel;
         this.appController = appController;
+        setupPauseKey();
 
         initGame();
     }
@@ -157,27 +161,41 @@ public class VsBotController {
     }
 
     private void showGameOverDialog(String message) {
-        JPanel panel = new JPanel();
-        panel.add(new JLabel(message));
-        JButton replayBtn = new JButton("Replay");
-        JButton menuBtn = new JButton("Main Menu");
-        panel.add(replayBtn);
-        panel.add(menuBtn);
-
-        JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(playPanel), "Game Over", true);
-        dialog.getContentPane().add(panel);
-        dialog.pack();
-        dialog.setLocationRelativeTo(playPanel);
-
-        replayBtn.addActionListener(e -> {
-            dialog.dispose();
-            appController.replayVsBotMode();
-        });
-        menuBtn.addActionListener(e -> {
-            dialog.dispose();
-            appController.showMenu();
-        });
-
-        dialog.setVisible(true);
+        GameOverDialog.showDialog(
+            (JFrame) SwingUtilities.getWindowAncestor(playPanel),
+            message,
+            () -> appController.replayVsBotMode(),
+            () -> appController.showMenu()
+        );
     }
+    
+    private void setupPauseKey() {
+        playPanel.setFocusable(true);
+        playPanel.requestFocusInWindow();
+        playPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "showPause");
+        playPanel.getActionMap().put("showPause", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showPauseDialog();
+            }
+        });
+    }
+
+    private void showPauseDialog() {
+        PauseDialog.showDialog(
+            (JFrame) SwingUtilities.getWindowAncestor(playPanel),
+            // Resume
+            () -> playPanel.requestFocusInWindow(),
+            // Setting
+            () -> {
+                JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(playPanel);
+                SettingsDialog.showDialog(parent);
+                showPauseDialog();
+            },
+            // MainMenu
+            () -> appController.showMenu()
+        );
+    }
+
+
 }

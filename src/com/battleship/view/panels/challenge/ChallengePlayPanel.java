@@ -2,8 +2,9 @@ package com.battleship.view.panels.challenge;
 
 import javax.swing.*;
 import java.awt.*;
+
+import com.battleship.utils.ViewConstants;
 import com.battleship.view.components.common.ImageBackgroundPanel;
-import com.battleship.view.utils.ViewConstants;
 
 public class ChallengePlayPanel extends JPanel {
     private ChallengeInfoAttackPanel infoPanel;
@@ -29,29 +30,21 @@ public class ChallengePlayPanel extends JPanel {
         // Bên phải: Board
         boardPanel = new ChallengeBoardPanel(font, cellSize);
         contentPanel.add(boardPanel, BorderLayout.CENTER);
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 20));
 
         // Dùng JLayeredPane để overlay content lên background
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setLayout(null);
 
         bgPanel.setBounds(0, 0, 1280, 720);
-        contentPanel.setBounds(0, 0, 1280, 720);
-
+        contentPanel.setBounds(20, 20, 1240, 680);
+        
         layeredPane.add(bgPanel, JLayeredPane.DEFAULT_LAYER);
         layeredPane.add(contentPanel, JLayeredPane.PALETTE_LAYER);
 
         this.add(layeredPane, BorderLayout.CENTER);
 
-        // Đảm bảo resize đúng
-        this.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
-                Dimension size = getSize();
-                bgPanel.setBounds(0, 0, size.width, size.height);
-                contentPanel.setBounds(0, 0, size.width, size.height);
-                layeredPane.setBounds(0, 0, size.width, size.height);
-            }
-        });
+        this.setPreferredSize(new Dimension(1280, 720));
     }
 
     public ChallengeInfoAttackPanel getInfoPanel() {

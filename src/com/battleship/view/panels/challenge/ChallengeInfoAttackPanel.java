@@ -4,8 +4,8 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+import com.battleship.utils.ViewConstants;
 import com.battleship.view.components.buttons.CustomToggleButton;
-import com.battleship.view.utils.ViewConstants;
 
 public class ChallengeInfoAttackPanel extends JPanel {
     private JLabel timeLabel;
@@ -17,14 +17,18 @@ public class ChallengeInfoAttackPanel extends JPanel {
     public ChallengeInfoAttackPanel(Font font, int preferredWidth) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setOpaque(false);
-        setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(Color.WHITE, 3, true),
-            "INFO & ATTACK",
-            TitledBorder.CENTER,
-            TitledBorder.TOP,
-            font.deriveFont(Font.BOLD, 18f),
-            Color.WHITE
-        ));
+        setBorder(BorderFactory.createCompoundBorder(
+        	    BorderFactory.createTitledBorder(
+        	        BorderFactory.createLineBorder(Color.WHITE, 3, true),
+        	        "INFO & ATTACK",
+        	        TitledBorder.CENTER,
+        	        TitledBorder.TOP,
+        	        font.deriveFont(Font.BOLD, 18f),
+        	        Color.WHITE
+        	    ),
+        	    BorderFactory.createEmptyBorder(12, 12, 12, 12)
+        	));
+
         setPreferredSize(new Dimension(preferredWidth, 0));
 
         // Info panel
@@ -75,7 +79,7 @@ public class ChallengeInfoAttackPanel extends JPanel {
         ));
 
         String[] attackNames = {"Single", "Cross", "Random", "Diamond"};
-        String[] btnOnImages = ViewConstants.CHALLENGE_ATK_ON_BUTTON_IMAGES;
+        String[] btnOnImages = ViewConstants.CHALLENGE_ATK_BUTTON_IMAGES;
         String[] btnHoverImages = ViewConstants.CHALLENGE_ATK_HOVER_BUTTON_IMAGES;
         String[] btnPressedImages = ViewConstants.CHALLENGE_ATK_PRESSED_BUTTON_IMAGES;
         int btnWidth = 160, btnHeight = 88;
@@ -119,7 +123,7 @@ public class ChallengeInfoAttackPanel extends JPanel {
         add(infoPanel);
         add(Box.createVerticalStrut(30));
         add(attackPanel);
-        add(Box.createVerticalGlue());
+        add(Box.createVerticalStrut(24)); 
     }
 
     public void setTime(String time) {

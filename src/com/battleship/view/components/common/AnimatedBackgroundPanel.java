@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.battleship.view.utils.ResourceLoader;
+import com.battleship.utils.ResourceLoader;
 
 public class AnimatedBackgroundPanel extends JPanel {
 	private final ImageIcon gifIcon;

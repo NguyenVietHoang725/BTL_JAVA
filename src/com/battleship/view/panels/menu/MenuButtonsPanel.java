@@ -11,9 +11,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.battleship.utils.ResourceLoader;
+import com.battleship.utils.ViewConstants;
 import com.battleship.view.components.buttons.CustomButton;
-import com.battleship.view.utils.ResourceLoader;
-import com.battleship.view.utils.ViewConstants;
 
 public class MenuButtonsPanel extends JPanel {
 	public MenuButtonsPanel() {
@@ -33,9 +33,9 @@ public class MenuButtonsPanel extends JPanel {
         add(Box.createRigidArea(new Dimension(0, 30)));
 
      // Đường dẫn ảnh button, hover, pressed
-        String[] btnOnImages = ViewConstants.MENU_ON_BUTTON_IMAGES;
+        String[] btnOnImages = ViewConstants.MENU_BUTTON_IMAGES;
         String[] btnHoverImages = ViewConstants.MENU_HOVER_BUTTON_IMAGES;
-        String[] btnOffImages = ViewConstants.MENU_OFF_BUTTON_IMAGES;
+        String[] btnOffImages = ViewConstants.MENU_PRESSED_BUTTON_IMAGES;
 
         // Kích thước từng button
         int[] btnWidths = {256, 256, 192, 192, 192};

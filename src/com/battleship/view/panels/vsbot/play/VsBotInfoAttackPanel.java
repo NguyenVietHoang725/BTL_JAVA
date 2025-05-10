@@ -1,7 +1,7 @@
 package com.battleship.view.panels.vsbot.play;
 
+import com.battleship.utils.ViewConstants;
 import com.battleship.view.components.buttons.CustomToggleButton;
-import com.battleship.view.utils.ViewConstants;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -60,7 +60,7 @@ public class VsBotInfoAttackPanel extends JPanel {
         ));
 
         String[] attackNames = {"Single", "Cross", "Random", "Diamond"};
-        String[] btnOnImages = ViewConstants.CHALLENGE_ATK_ON_BUTTON_IMAGES;
+        String[] btnOnImages = ViewConstants.CHALLENGE_ATK_BUTTON_IMAGES;
         String[] btnHoverImages = ViewConstants.CHALLENGE_ATK_HOVER_BUTTON_IMAGES;
         String[] btnPressedImages = ViewConstants.CHALLENGE_ATK_PRESSED_BUTTON_IMAGES;
         int btnWidth = 96, btnHeight = 48;

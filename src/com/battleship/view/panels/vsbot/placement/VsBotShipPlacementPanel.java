@@ -50,7 +50,7 @@ public class VsBotShipPlacementPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Image bg = new ImageIcon(getClass().getResource(com.battleship.view.utils.ViewConstants.VSBOT_PLACESHIP_BG_IMG)).getImage();
+        Image bg = new ImageIcon(getClass().getResource(com.battleship.utils.ViewConstants.VSBOT_PLACESHIP_BG_IMG)).getImage();
         g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
     }
 

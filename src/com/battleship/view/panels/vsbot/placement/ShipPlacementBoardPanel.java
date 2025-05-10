@@ -2,11 +2,12 @@ package com.battleship.view.panels.vsbot.placement;
 
 import com.battleship.enums.CellState;
 import com.battleship.view.components.board.GameBoardPanel;
-import com.battleship.view.utils.ResourceLoader;
-import com.battleship.view.utils.ViewConstants;
+import com.battleship.view.components.dialog.ErrorDialog;
 import com.battleship.model.board.Board;
 import com.battleship.model.ship.Ship;
 import com.battleship.model.ship.ShipPlacement;
+import com.battleship.utils.ResourceLoader;
+import com.battleship.utils.ViewConstants;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -89,9 +90,9 @@ public class ShipPlacementBoardPanel extends JPanel {
         boardPanel.setOpaque(false);
 
         // Gắn sự kiện đặt tàu cho từng ô
-        for (int y = 0; y < BOARD_SIZE; y++) {
-            for (int x = 0; x < BOARD_SIZE; x++) {
-                JButton btn = boardPanel.getButton(y, x);
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
+                JButton btn = boardPanel.getButton(x, y);
                 int fx = x, fy = y;
                 btn.addActionListener(e -> placeShip(fx, fy));
                 btn.addMouseListener(new MouseAdapter() {
@@ -108,6 +109,7 @@ public class ShipPlacementBoardPanel extends JPanel {
                             }
                         }
                     }
+
                     @Override
                     public void mouseExited(MouseEvent e) {
                         if (selectedShipButtonIdx != -1 && !shipButtonPlaced[selectedShipButtonIdx]) {
@@ -137,13 +139,30 @@ public class ShipPlacementBoardPanel extends JPanel {
     }
 
     private void placeShip(int x, int y) {
-        if (selectedShipButtonIdx == -1) return;
+    	if (selectedShipButtonIdx == -1) {
+            ErrorDialog.showDialog(
+                (JFrame) SwingUtilities.getWindowAncestor(this),
+                "Please select a ship first!",
+                () -> {}
+            );
+    	}
         int idx = selectedShipButtonIdx;
-        if (shipButtonPlaced[idx]) return;
+        if (shipButtonPlaced[idx]) {
+            ErrorDialog.showDialog(
+                (JFrame) SwingUtilities.getWindowAncestor(this),
+                "This ship has already been placed!",
+                () -> {}
+            );
+            return;
+        }
 
         // Chỉ cho phép đặt nếu vị trí click trùng với preview cuối cùng
         if (x != lastPreviewX || y != lastPreviewY || lastPreviewLen != ShipPlacement.SHIP_LENGTHS[idx]) {
-            JOptionPane.showMessageDialog(this, "Please hover over the cell before placing the ship!", "Error", JOptionPane.ERROR_MESSAGE);
+            ErrorDialog.showDialog(
+                (JFrame) SwingUtilities.getWindowAncestor(this),
+                "Please hover over the cell before placing the ship!",
+                () -> {} // Callback rỗng vì không cần thực hiện gì sau khi đóng dialog
+            );
             return;
         }
 
@@ -158,7 +177,14 @@ public class ShipPlacementBoardPanel extends JPanel {
     }
 
     public void undo() {
-        if (shipPlacement.undo()) {
+    	if (!shipPlacement.undo()) {
+            ErrorDialog.showDialog(
+                (JFrame) SwingUtilities.getWindowAncestor(this),
+                "No more moves to undo!",
+                () -> {}
+            );
+            return;
+        } else {
             // Lấy index nút tàu vừa undo (theo thứ tự đặt)
             if (!placedShipButtonOrder.isEmpty()) {
                 int idx = placedShipButtonOrder.remove(placedShipButtonOrder.size() - 1);
@@ -170,7 +196,14 @@ public class ShipPlacementBoardPanel extends JPanel {
     }
 
     public void redo() {
-        if (shipPlacement.redo()) {
+    	if (!shipPlacement.redo()) {
+            ErrorDialog.showDialog(
+                (JFrame) SwingUtilities.getWindowAncestor(this),
+                "No more moves to redo!",
+                () -> {}
+            );
+            return;
+        } else {
             // Tìm index nút tàu cần disable lại (theo thứ tự đặt lại)
             // Đếm số tàu đã đặt, disable đúng nút tiếp theo chưa disable
             for (int i = 0; i < shipButtonPlaced.length; i++) {
@@ -205,26 +238,27 @@ public class ShipPlacementBoardPanel extends JPanel {
         return shipPlacement.canPlaceShip(len, x, y, horizontal);
     }
 
-    private void previewShip(int x, int y, int len, boolean hover) {
+    public void previewShip(int x, int y, int len, boolean hover) {
         for (int i = 0; i < len; i++) {
             int nx = x + (horizontal ? 0 : i);
             int ny = y + (horizontal ? i : 0);
             if (nx < 0 || nx >= BOARD_SIZE || ny < 0 || ny >= BOARD_SIZE) continue;
+
             boolean hasShip = shipPlacement.getBoard().getBoard()[nx][ny].isHasShip();
             if (!hasShip) {
-                boardPanel.setCellState(ny, nx, hover ? CellState.HOVER : CellState.NORMAL);
+                boardPanel.setCellState(nx, ny, hover ? CellState.HOVER : CellState.NORMAL);
             }
         }
     }
 
     private void updateBoardView() {
         Board logicBoard = shipPlacement.getBoard();
-        for (int y = 0; y < BOARD_SIZE; y++) {
-            for (int x = 0; x < BOARD_SIZE; x++) {
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
                 if (logicBoard.getBoard()[x][y].isHasShip()) {
-                    boardPanel.setCellState(y, x, CellState.SHIP);
+                    boardPanel.setCellState(x, y, CellState.SHIP);
                 } else {
-                    boardPanel.setCellState(y, x, CellState.NORMAL);
+                    boardPanel.setCellState(x, y, CellState.NORMAL);
                 }
             }
         }

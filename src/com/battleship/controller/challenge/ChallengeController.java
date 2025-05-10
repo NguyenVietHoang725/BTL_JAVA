@@ -5,13 +5,16 @@ import com.battleship.enums.AttackType;
 import com.battleship.enums.CellState;
 import com.battleship.model.logic.ChallengeModeLogic;
 import com.battleship.model.ship.Ship;
+import com.battleship.utils.ResourceLoader;
+import com.battleship.utils.ViewConstants;
 import com.battleship.model.board.Node;
 import com.battleship.view.panels.challenge.ChallengePlayPanel;
 import com.battleship.view.panels.challenge.ChallengeInfoAttackPanel;
 import com.battleship.view.panels.challenge.ChallengeBoardPanel;
 import com.battleship.view.components.buttons.CustomToggleButton;
-import com.battleship.view.utils.ViewConstants;
-import com.battleship.view.utils.ResourceLoader;
+import com.battleship.view.components.dialog.GameOverDialog;
+import com.battleship.view.components.dialog.PauseDialog;
+import com.battleship.view.components.dialog.SettingsDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -50,6 +53,7 @@ public class ChallengeController {
 			this.appController = appController;
             this.cellSize = cellSize;
             this.gameOverDialogShown = false;
+            setupPauseKey();
 
         // Load icon hit/miss
         this.hitIcon = new ImageIcon(ResourceLoader.loadImage(ViewConstants.CELL_HIT_IMG)
@@ -144,31 +148,15 @@ public class ChallengeController {
         if (gameOverDialogShown) return;
         gameOverDialogShown = true;
         if (timer != null) timer.stop();
+
         String message = gameLogic.isPlayerWin() ? "You win!" : "You lose!";
 
-        // Tạo custom panel
-        JPanel panel = new JPanel();
-        panel.add(new JLabel(message));
-        JButton replayBtn = new JButton("Replay");
-        JButton menuBtn = new JButton("Main Menu");
-        panel.add(replayBtn);
-        panel.add(menuBtn);
-
-        JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(playPanel), "Game Over", true);
-        dialog.getContentPane().add(panel);
-        dialog.pack();
-        dialog.setLocationRelativeTo(playPanel);
-
-        replayBtn.addActionListener(e -> {
-            dialog.dispose();
-            appController.startChallengeMode(); // Random lại file challenge mới
-        });
-        menuBtn.addActionListener(e -> {
-            dialog.dispose();
-            appController.showMenu();
-        });
-
-        dialog.setVisible(true);
+        GameOverDialog.showDialog(
+            (JFrame) SwingUtilities.getWindowAncestor(playPanel),
+            message,
+            () -> appController.startChallengeMode(),
+            () -> appController.showMenu()
+        );
     }
 
     private String formatTime(int seconds) {
@@ -180,4 +168,36 @@ public class ChallengeController {
     public ChallengePlayPanel getPlayPanel() {
         return playPanel;
     }
+    
+    private void setupPauseKey() {
+        playPanel.setFocusable(true);
+        playPanel.requestFocusInWindow();
+        playPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "showPause");
+        playPanel.getActionMap().put("showPause", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showPauseDialog();
+            }
+        });
+    }
+
+    private void showPauseDialog() {
+        PauseDialog.showDialog(
+            (JFrame) SwingUtilities.getWindowAncestor(playPanel),
+            // Resume
+            () -> playPanel.requestFocusInWindow(),
+            // Setting
+            () -> {
+                // Ẩn PauseDialog, show SettingDialog, khi cancel thì show lại PauseDialog
+                JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(playPanel);
+                SettingsDialog.showDialog(parent);
+                // Sau khi đóng SettingDialog, show lại PauseDialog
+                showPauseDialog();
+            },
+            // MainMenu
+            () -> appController.showMenu()
+        );
+    }
+
+
 }

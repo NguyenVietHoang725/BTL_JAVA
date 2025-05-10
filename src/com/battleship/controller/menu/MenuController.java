@@ -54,7 +54,7 @@ public class MenuController extends BaseController {
                 showMessage("Chức năng xem luật chơi sẽ được cập nhật!");
                 break;
             case 3: // Setting
-                showMessage("Chức năng cài đặt sẽ được cập nhật!");
+            	com.battleship.view.components.dialog.SettingsDialog.showDialog(mainFrame);
                 break;
             case 4: // Quit
                 System.exit(0);

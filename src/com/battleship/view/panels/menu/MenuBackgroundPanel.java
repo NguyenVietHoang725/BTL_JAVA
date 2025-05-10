@@ -1,7 +1,7 @@
 package com.battleship.view.panels.menu;
 
+import com.battleship.utils.ViewConstants;
 import com.battleship.view.components.common.AnimatedBackgroundPanel;
-import com.battleship.view.utils.ViewConstants;
 
 public class MenuBackgroundPanel extends AnimatedBackgroundPanel {
 	public MenuBackgroundPanel() {

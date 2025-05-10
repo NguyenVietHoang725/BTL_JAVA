@@ -2,6 +2,8 @@ package com.battleship.view;
 
 import java.awt.CardLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
 
 public class CardPanel extends JPanel {
@@ -18,17 +20,19 @@ public class CardPanel extends JPanel {
     }
 
     public void setPanel(String name, Component panel) {
-        // Remove panel cũ nếu đã tồn tại (theo name)
         for (Component comp : getComponents()) {
             if (comp.getName() != null && comp.getName().equals(name)) {
-                System.out.println("CardPanel: remove old panel with name = " + name);
                 remove(comp);
                 break;
             }
         }
-        panel.setName(name); // Đặt name cho panel
+
+        panel.setName(name);
+
+        // Bổ sung: đảm bảo panel có kích thước chuẩn
+        panel.setPreferredSize(new Dimension(1280, 720));
+
         this.add(panel, name);
-        System.out.println("CardPanel: add panel with name = " + name);
         revalidate();
         repaint();
     }

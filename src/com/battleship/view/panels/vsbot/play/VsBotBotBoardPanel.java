@@ -3,9 +3,9 @@ package com.battleship.view.panels.vsbot.play;
 import com.battleship.enums.CellState;
 import com.battleship.model.board.Board;
 import com.battleship.model.board.Node;
+import com.battleship.utils.ResourceLoader;
+import com.battleship.utils.ViewConstants;
 import com.battleship.view.components.board.GameBoardPanel;
-import com.battleship.view.utils.ResourceLoader;
-import com.battleship.view.utils.ViewConstants;
 
 import javax.swing.*;
 import javax.swing.border.Border;

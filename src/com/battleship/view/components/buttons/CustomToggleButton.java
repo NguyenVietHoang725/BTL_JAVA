@@ -4,7 +4,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JToggleButton;
-import com.battleship.view.utils.ResourceLoader;
+
+import com.battleship.utils.ResourceLoader;
 
 public class CustomToggleButton extends JToggleButton {
     public CustomToggleButton(String iconPath, String hoverPath, String pressedPath, int width, int height) {

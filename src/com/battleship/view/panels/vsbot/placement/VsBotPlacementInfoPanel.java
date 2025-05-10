@@ -1,8 +1,8 @@
 package com.battleship.view.panels.vsbot.placement;
 
+import com.battleship.utils.ViewConstants;
 import com.battleship.view.components.buttons.CustomButton;
 import com.battleship.view.components.buttons.CustomToggleButton;
-import com.battleship.view.utils.ViewConstants;
 
 import javax.swing.*;
 import javax.swing.border.Border;

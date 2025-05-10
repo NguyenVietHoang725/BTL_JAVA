@@ -2,7 +2,7 @@ package com.battleship.view.components.common;
 
 import javax.swing.*;
 
-import com.battleship.view.utils.ResourceLoader;
+import com.battleship.utils.ResourceLoader;
 
 import java.awt.*;
 

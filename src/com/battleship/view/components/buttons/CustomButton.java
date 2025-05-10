@@ -6,7 +6,7 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import com.battleship.view.utils.ResourceLoader;
+import com.battleship.utils.ResourceLoader;
 
 public class CustomButton extends JButton {
 	public CustomButton(String iconPath, String hoverPath, String pressedPath, int width, int height) {
