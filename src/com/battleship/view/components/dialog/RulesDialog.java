@@ -40,40 +40,44 @@ public class RulesDialog {
         gbc.insets = new Insets(5, 5, 5, 5);
 
         // Use system default font for content
-        Font font = ResourceLoader.loadFont(ViewConstants.FONT_PATH, 18f); 
-        String[] rules = {
-        		"1. Objective",
-        		"Destroy all enemy ships.",
-        		"",
-        		"2. Game Modes",
-        		"- Single Player: You shoot at a map with randomly placed ships.",
-        		"",
-        		"- Play with Bot: You and the bot take turns shooting. Whoever destroys all enemy ships first wins.",
-        		"",
-        		"3. How to Play",
-        		"- Each turn, you select one tile on the opponent's map to shoot.",
-        		"",
-        		"+ Hit: you hit a ship.",
-        		"+ Miss: you miss.",
-        		"",
-        		"- In bot mode, the bot will also shoot after your turn.",
-        		"",
-        		"4. Win – Lose Conditions",
-        		"- Win: When you destroy all enemy ships.",
-        		"",
-        		"- Lose:",
-        		"+ Out of allowed shots (Single Player).",
-        		"+ Out of time (Single Player).",
-        		"+ All your ships are destroyed by the bot (Play with Bot)."
-        	};
+        Font font = ResourceLoader.loadFont(ViewConstants.FONT_PATH, 18f);
+        String[][] rules = {
+            {"1. Objective", "Destroy all enemy ships."},
+            {"", ""},
+            {"2. Game Modes", "- Single Player: You shoot at a map with randomly placed ships."},
+            {"", "- Play with Bot: You and the bot take turns shooting. Whoever destroys all enemy ships first wins."},
+            {"", ""},
+            {"3. How to Play", "- Each turn, you select one tile on the opponent's map to shoot."},
+            {"", "+ Hit: you hit a ship."},
+            {"", "+ Miss: you miss."},
+            {"", "- In bot mode, the bot will also shoot after your turn."},
+            {"", ""},
+            {"4. Win – Lose Conditions", "- Win: When you destroy all enemy ships."},
+            {"", "- Lose:"},
+            {"", "+ Out of allowed shots (Single Player)."},
+            {"", "+ Out of time (Single Player)."},
+            {"", "+ All your ships are destroyed by the bot (Play with Bot)."}
+        };
 
 
-        for (String rule : rules) {
-            JLabel label = new JLabel(rule);
-            label.setFont(font);
-            label.setForeground(Color.WHITE);
-            contentPanel.add(label, gbc);
-            gbc.gridy++;
+        for (String[] rule : rules) {
+            // Label cho đề mục (nếu có)
+            if (!rule[0].isEmpty()) {
+                JLabel titleLabel = new JLabel(rule[0]);
+                titleLabel.setFont(font);
+                titleLabel.setForeground(new Color(255, 215, 0)); // Màu vàng
+                contentPanel.add(titleLabel, gbc);
+                gbc.gridy++;
+            }
+           
+            // Label cho nội dung
+            if (!rule[1].isEmpty()) {
+                JLabel contentLabel = new JLabel(rule[1]);
+                contentLabel.setFont(font);
+                contentLabel.setForeground(Color.WHITE);
+                contentPanel.add(contentLabel, gbc);
+                gbc.gridy++;
+            }
         }
 
         // Scroll Pane with fixed size

@@ -65,7 +65,7 @@ public class AppController {
         System.out.println("AppController: startChallengeMode");
         try {
             Font font = ResourceLoader.loadFont(ViewConstants.FONT_PATH, 16f);
-            String[] challengeFiles = ViewConstants.CHALLENGE_FILE_PATHS;
+            String[] challengeFiles = AppConstants.CHALLENGE_FILE_PATHS;
             String filePath = challengeFiles[new java.util.Random().nextInt(challengeFiles.length)];
             ChallengeBoardLoader loader = new ChallengeBoardLoader();
             Board board = loader.loadBoard(filePath);
@@ -98,7 +98,7 @@ public class AppController {
         Font font = ResourceLoader.loadFont(ViewConstants.FONT_PATH, 16f);
         int cellSize1 = 42;
         int cellSize2 = 38;
-        var placementPanel = new VsBotShipPlacementPanel(font, cellSize1);
+        var placementPanel = new VsBotShipPlacementPanel(font, cellSize1, this);
 
 
         placementPanel.getInfoPanel().getConfirmButton().addActionListener(e -> {
@@ -136,7 +136,7 @@ public class AppController {
                             botStrategy = new EasyBotAtkStrategy();
                     }
                     // Load bảng cho bot
-                    Board botBoard = BotBoardLoader.loadRandomBoardFromResources(ViewConstants.VSBOT_FILE_PATHS);
+                    Board botBoard = BotBoardLoader.loadRandomBoardFromResources(AppConstants.VSBOT_FILE_PATHS);
                     if (botBoard == null || botBoard.getShips().isEmpty()) {
                         throw new Exception("Failed to load bot board");
                     }

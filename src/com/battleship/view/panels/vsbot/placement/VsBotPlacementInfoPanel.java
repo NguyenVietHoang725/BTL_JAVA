@@ -1,24 +1,28 @@
 package com.battleship.view.panels.vsbot.placement;
 
+
 import com.battleship.utils.ViewConstants;
 import com.battleship.view.components.buttons.CustomButton;
 import com.battleship.view.components.buttons.CustomToggleButton;
+
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+
 public class VsBotPlacementInfoPanel extends JPanel {
     private CustomToggleButton easyBtn, mediumBtn, hardBtn;
     private ButtonGroup difficultyGroup;
-    private JLabel infoLabel;
-    private CustomButton rotateButton, confirmButton, resetButton, undoButton, redoButton;
+    private CustomButton rotateButton, autoButton, resetButton, confirmButton, undoButton, redoButton;
     private JToggleButton[] shipButtons;
+
 
     public VsBotPlacementInfoPanel(Font font) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setOpaque(false);
+
 
         // Border ngoài cùng
         Border outerBorder = BorderFactory.createCompoundBorder(
@@ -34,6 +38,7 @@ public class VsBotPlacementInfoPanel extends JPanel {
         );
         setBorder(outerBorder);
 
+
         // ==== PHẦN 1: CHỌN ĐỘ KHÓ ====
         JPanel difficultyPanel = new JPanel();
         difficultyPanel.setOpaque(false);
@@ -42,6 +47,7 @@ public class VsBotPlacementInfoPanel extends JPanel {
             BorderFactory.createLineBorder(Color.WHITE, 2, true),
             "Difficulty", TitledBorder.CENTER, TitledBorder.TOP, font.deriveFont(Font.BOLD, 14f), Color.WHITE
         ));
+
 
         easyBtn = new CustomToggleButton(
             ViewConstants.VSBOT_EASY_BUTTON,
@@ -62,11 +68,13 @@ public class VsBotPlacementInfoPanel extends JPanel {
             112, 40
         );
 
+
         difficultyGroup = new ButtonGroup();
         difficultyGroup.add(easyBtn);
         difficultyGroup.add(mediumBtn);
         difficultyGroup.add(hardBtn);
         easyBtn.setSelected(true);
+
 
         difficultyPanel.add(Box.createHorizontalGlue());
         difficultyPanel.add(easyBtn);
@@ -76,6 +84,7 @@ public class VsBotPlacementInfoPanel extends JPanel {
         difficultyPanel.add(hardBtn);
         difficultyPanel.add(Box.createHorizontalGlue());
 
+
         // ==== PHẦN 2: CHỌN TÀU ====
         JPanel shipPanel = new JPanel();
         shipPanel.setOpaque(false);
@@ -84,6 +93,7 @@ public class VsBotPlacementInfoPanel extends JPanel {
             BorderFactory.createLineBorder(Color.WHITE, 2, true),
             "Select Ship", TitledBorder.CENTER, TitledBorder.TOP, font.deriveFont(Font.BOLD, 14f), Color.WHITE
         ));
+
 
         int[] shipSizes = {2, 3, 3, 4, 5};
         shipButtons = new JToggleButton[5];
@@ -96,6 +106,7 @@ public class VsBotPlacementInfoPanel extends JPanel {
             shipGroup.add(shipButtons[i]);
         }
 
+
         // ==== PHẦN 3: CÁC NÚT CHỨC NĂNG ====
         JPanel actionPanel = new JPanel();
         actionPanel.setOpaque(false);
@@ -104,6 +115,7 @@ public class VsBotPlacementInfoPanel extends JPanel {
             BorderFactory.createLineBorder(Color.WHITE, 2, true),
             "Actions", TitledBorder.CENTER, TitledBorder.TOP, font.deriveFont(Font.BOLD, 14f), Color.WHITE
         ));
+
 
         // Undo/Redo trên cùng một hàng
         JPanel undoRedoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
@@ -122,16 +134,24 @@ public class VsBotPlacementInfoPanel extends JPanel {
         );
         undoRedoPanel.add(undoButton);
         undoRedoPanel.add(redoButton);
-        
+
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+
         rotateButton = new CustomButton(
             ViewConstants.VSBOT_ROTATE_BUTTON,
             ViewConstants.VSBOT_ROTATE_HOVER_BUTTON,
             ViewConstants.VSBOT_ROTATE_PRESSED_BUTTON,
+            112, 40
+        );
+        autoButton = new CustomButton(
+            ViewConstants.VSBOT_AUTO_BUTTON,
+            ViewConstants.VSBOT_AUTO_HOVER_BUTTON,
+            ViewConstants.VSBOT_AUTO_PRESSED_BUTTON,
             112, 40
         );
         resetButton = new CustomButton(
@@ -147,14 +167,21 @@ public class VsBotPlacementInfoPanel extends JPanel {
             112, 40
         );
 
+
         rotateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        autoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         resetButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         confirmButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
         buttonPanel.add(rotateButton);
+        buttonPanel.add(Box.createVerticalStrut(16));
+        buttonPanel.add(autoButton);
         buttonPanel.add(Box.createVerticalStrut(16));
         buttonPanel.add(resetButton);
         buttonPanel.add(Box.createVerticalStrut(16));
         buttonPanel.add(confirmButton);
+
 
         actionPanel.add(Box.createVerticalStrut(8));
         actionPanel.add(undoRedoPanel);
@@ -162,10 +189,6 @@ public class VsBotPlacementInfoPanel extends JPanel {
         actionPanel.add(buttonPanel);
         actionPanel.add(Box.createVerticalStrut(8));
 
-        // ==== LABEL HƯỚNG DẪN ====
-        infoLabel = new JLabel("Select a ship and place it on the board");
-        infoLabel.setFont(font.deriveFont(Font.BOLD, 16f));
-        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // ==== THÊM VÀO PANEL CHÍNH ====
         add(Box.createVerticalStrut(8));
@@ -174,10 +197,9 @@ public class VsBotPlacementInfoPanel extends JPanel {
         add(shipPanel);
         add(Box.createVerticalStrut(16));
         add(actionPanel);
-        add(Box.createVerticalStrut(16));
-        add(infoLabel);
         add(Box.createVerticalGlue());
     }
+
 
     public String getSelectedDifficulty() {
         if (easyBtn.isSelected()) return "Easy";
@@ -185,10 +207,13 @@ public class VsBotPlacementInfoPanel extends JPanel {
         return "Hard";
     }
     public JButton getRotateButton() { return rotateButton; }
+    public JButton getAutoButton() { return autoButton; }
     public JButton getConfirmButton() { return confirmButton; }
     public JButton getResetButton() { return resetButton; }
     public JButton getUndoButton() { return undoButton; }
     public JButton getRedoButton() { return redoButton; }
-    public JLabel getInfoLabel() { return infoLabel; }
     public JToggleButton[] getShipButtons() { return shipButtons; }
 }
+
+
+

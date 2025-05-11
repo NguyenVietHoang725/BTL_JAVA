@@ -19,48 +19,56 @@ public class SettingsDialog {
         int dialogWidth = ViewConstants.dialogType1Width;
         int dialogHeight = ViewConstants.dialogType1Height;
         
+        // Dialog setup
         JDialog dialog = new JDialog(parentFrame, "Settings", true);
         dialog.setUndecorated(true);
         dialog.setSize(dialogWidth, dialogHeight);
+        dialog.setLocationRelativeTo(parentFrame);
         dialog.setLayout(null);
-        
-        // Tính toán vị trí để dialog nằm giữa parent frame
-        int x = parentFrame.getX() + (parentFrame.getWidth() - dialogWidth) / 2;
-        int y = parentFrame.getY() + (parentFrame.getHeight() - dialogHeight) / 2;
-        dialog.setLocation(x, y);
+
+
+        // LayeredPane
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setLayout(null);
+        layeredPane.setBounds(0, 0, dialogWidth, dialogHeight);
 
 
         // Background
         ImageBackgroundPanel bgPanel = new ImageBackgroundPanel(ViewConstants.SETTING_DIALOG_BG);
         bgPanel.setBounds(0, 0, dialogWidth, dialogHeight);
+        layeredPane.add(bgPanel, JLayeredPane.DEFAULT_LAYER);
 
 
+        // Font - tăng kích thước font lên 2 lần
+        Font font = ResourceLoader.loadFont(ViewConstants.FONT_PATH, 24f); // Tăng từ 12f lên 24f
+
+
+        // Get current settings
         SoundSettings settings = SoundManager.getSettings();
-        Font font = ResourceLoader.loadFont(ViewConstants.FONT_PATH, 12f);
 
 
-        // Tính toán vị trí cho các component
-        int startX = (dialogWidth - 240) / 2; // Căn giữa các component theo chiều ngang
-        int startY = (dialogHeight - 135) / 2; // Căn giữa các component theo chiều dọc
+        // Calculate component positions - điều chỉnh khoảng cách
+        int startX = (dialogWidth - 480) / 2; // Tăng từ 240 lên 480
+        int startY = (dialogHeight - 270) / 2; // Tăng từ 135 lên 270
 
 
-        // BGM
+        // BGM Section
         JLabel bgmLabel = new JLabel("BGM:");
         bgmLabel.setFont(font);
         bgmLabel.setForeground(Color.WHITE);
-        bgmLabel.setBounds(startX + 16, startY + 20, 40, 20);
+        bgmLabel.setBounds(startX + 32, startY + 75, 80, 40); // Tăng kích thước và khoảng cách
 
 
         JCheckBox bgmCheck = new JCheckBox();
         bgmCheck.setSelected(settings.isMusicEnabled());
         bgmCheck.setOpaque(false);
-        bgmCheck.setBounds(startX + 60, startY + 20, 16, 16);
+        bgmCheck.setBounds(startX + 120, startY + 80, 32, 32); // Tăng kích thước checkbox
         bgmCheck.setIcon(new ImageIcon(ResourceLoader.loadImage(ViewConstants.CHECKBOX_OFF)));
         bgmCheck.setSelectedIcon(new ImageIcon(ResourceLoader.loadImage(ViewConstants.CHECKBOX_ON)));
 
 
         JSlider bgmSlider = new JSlider(0, 100, (int)(settings.getMusicVolume() * 100));
-        bgmSlider.setBounds(startX + 90, startY + 20, 130, 16);
+        bgmSlider.setBounds(startX + 180, startY + 80, 260, 32); // Tăng kích thước slider
         bgmSlider.setOpaque(false);
         bgmSlider.setUI(new CustomSliderUI(
             bgmSlider,
@@ -71,23 +79,23 @@ public class SettingsDialog {
         ));
 
 
-        // SFX
+        // SFX Section
         JLabel sfxLabel = new JLabel("SFX:");
         sfxLabel.setFont(font);
         sfxLabel.setForeground(Color.WHITE);
-        sfxLabel.setBounds(startX + 16, startY + 50, 40, 20);
+        sfxLabel.setBounds(startX + 32, startY + 125, 80, 40); // Tăng khoảng cách giữa các phần
 
 
         JCheckBox sfxCheck = new JCheckBox();
         sfxCheck.setSelected(settings.isSfxEnabled());
         sfxCheck.setOpaque(false);
-        sfxCheck.setBounds(startX + 60, startY + 50, 16, 16);
+        sfxCheck.setBounds(startX + 120, startY + 130, 32, 32); // Tăng kích thước checkbox
         sfxCheck.setIcon(new ImageIcon(ResourceLoader.loadImage(ViewConstants.CHECKBOX_OFF)));
         sfxCheck.setSelectedIcon(new ImageIcon(ResourceLoader.loadImage(ViewConstants.CHECKBOX_ON)));
 
 
         JSlider sfxSlider = new JSlider(0, 100, (int)(settings.getSfxVolume() * 100));
-        sfxSlider.setBounds(startX + 90, startY + 50, 130, 16);
+        sfxSlider.setBounds(startX + 180, startY + 130, 260, 32); // Tăng kích thước slider
         sfxSlider.setOpaque(false);
         sfxSlider.setUI(new CustomSliderUI(
             sfxSlider,
@@ -98,14 +106,14 @@ public class SettingsDialog {
         ));
 
 
-        // Buttons
+        // Buttons Section
         CustomButton applyBtn = new CustomButton(
             ViewConstants.BTN_APPLY_NORMAL,
             ViewConstants.BTN_APPLY_HOVER,
             ViewConstants.BTN_APPLY_PRESSED,
-            72, 24
+            144, 48 // Tăng kích thước button từ 72x24 lên 144x48
         );
-        applyBtn.setBounds(startX + 32, startY + 95, 72, 24);
+        applyBtn.setBounds(startX + 64, startY + 190, 144, 48);
         applyBtn.addActionListener(e -> {
             boolean musicEnabled = bgmCheck.isSelected();
             boolean sfxEnabled = sfxCheck.isSelected();
@@ -131,7 +139,6 @@ public class SettingsDialog {
 
 
             SoundManager.updateSfxVolume();
-            dialog.dispose();
         });
 
 
@@ -139,27 +146,24 @@ public class SettingsDialog {
             ViewConstants.BTN_CANCEL_NORMAL,
             ViewConstants.BTN_CANCEL_HOVER,
             ViewConstants.BTN_CANCEL_PRESSED,
-            72, 24
+            144, 48 // Tăng kích thước button từ 72x24 lên 144x48
         );
-        cancelBtn.setBounds(startX + 128, startY + 95, 72, 24);
+        cancelBtn.setBounds(startX + 256, startY + 190, 144, 48);
         cancelBtn.addActionListener(e -> dialog.dispose());
 
 
-        JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setPreferredSize(new Dimension(dialogWidth, dialogHeight));
+        // Add all components to layered pane
+        layeredPane.add(bgmLabel, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(bgmCheck, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(bgmSlider, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(sfxLabel, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(sfxCheck, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(sfxSlider, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(applyBtn, JLayeredPane.MODAL_LAYER);
+        layeredPane.add(cancelBtn, JLayeredPane.MODAL_LAYER);
 
 
-        layeredPane.add(bgPanel, Integer.valueOf(0));
-        layeredPane.add(bgmLabel, Integer.valueOf(1));
-        layeredPane.add(bgmCheck, Integer.valueOf(1));
-        layeredPane.add(bgmSlider, Integer.valueOf(1));
-        layeredPane.add(sfxLabel, Integer.valueOf(1));
-        layeredPane.add(sfxCheck, Integer.valueOf(1));
-        layeredPane.add(sfxSlider, Integer.valueOf(1));
-        layeredPane.add(applyBtn, Integer.valueOf(1));
-        layeredPane.add(cancelBtn, Integer.valueOf(1));
-
-
+        // Apply
         dialog.setContentPane(layeredPane);
         dialog.setVisible(true);
     }
